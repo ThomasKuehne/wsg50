@@ -25,16 +25,14 @@
  */
 package cn.kuehne.wsg50.packets;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import cn.kuehne.wsg50.Command;
-import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.Wsg50Coder;
 import cn.kuehne.wsg50.helper.InputArray;
 import cn.kuehne.wsg50.helper.OutputArray;
 
@@ -42,22 +40,23 @@ public class LoopCommandTests {
 
 	@Test
 	public void testRoundtrip() {
-		final Command c = PacketID.Homing.getCommand();
+		byte[] data = new byte[] { 1, 2, 3 };
+
+		final Command c = PacketID.Loop.getCommand();
 		assertNotNull(c);
 
-		final HomingCommand h1 = (HomingCommand) c;
-		h1.setDirection(HomingCommand.Direction.NEGATIVE);
+		final LoopCommand loop = (LoopCommand) c;
+		loop.setLoopData(data);
 
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 
 		final OutputArray output = new OutputArray();
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final Packet result = wsg50.read(input, true, true);
+		final LoopCommand result = wsg50.readDebug(input, LoopCommand.class,
+				true);
 
-		assertTrue(result instanceof HomingCommand);
-		final HomingCommand h2 = (HomingCommand) result;
-		assertEquals(HomingCommand.Direction.NEGATIVE, h2.getDirection());
+		assertArrayEquals(data, result.getLoopData());
 	}
 }

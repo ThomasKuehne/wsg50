@@ -59,7 +59,7 @@ public class Wsg50CoderTests {
 	}
 
 	public static class Example2 extends AbstractPacket {
-		protected Example2() {
+		public Example2() {
 			super((byte) 1);
 		}
 	}
@@ -67,7 +67,7 @@ public class Wsg50CoderTests {
 	public static class Example3 extends AbstractPacket implements Command {
 		private int v;
 
-		protected Example3() {
+		public Example3() {
 			super((byte) 1);
 		}
 
@@ -84,26 +84,27 @@ public class Wsg50CoderTests {
 
 	@Test
 	public void testExample1In() {
-		final byte[] input = new byte[] { (byte) 0xAA, (byte) 0xAA, (byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
+		final byte[] input = new byte[] { (byte) 0xAA, (byte) 0xAA,
+				(byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
 		final InputArray in = new InputArray(input);
-		final Wsg50Coder wsg50 = new Wsg50Coder();
-		Example1 e1 = new Example1();
+		final PacketCoder wsg50 = new PacketCoder();
+		// Example1 e1 = new Example1();
 
-		final Packet result = wsg50.read(in, e1, true);
+		final Packet result = wsg50.readDebug(in, Example1.class, true);
 
 		assertTrue(result instanceof Example1);
 		Example1 e2 = (Example1) result;
 
 		assertArrayEquals(new byte[] {}, e2.payload);
-		assertTrue(e1 == e2);
 	}
 
 	@Test
 	public void testExample1Out() {
-		final byte[] expected = new byte[] { (byte) 0xAA, (byte) 0xAA, (byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
+		final byte[] expected = new byte[] { (byte) 0xAA, (byte) 0xAA,
+				(byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
 		final OutputArray out = new OutputArray();
 		final Packet packet = new Example1();
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 
 		wsg50.write(out, packet);
 
@@ -113,25 +114,24 @@ public class Wsg50CoderTests {
 
 	@Test
 	public void testExample2In() {
-		final byte[] input = new byte[] { (byte) 0xAA, (byte) 0xAA, (byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
+		final byte[] input = new byte[] { (byte) 0xAA, (byte) 0xAA,
+				(byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
 		final InputArray in = new InputArray(input);
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 		Example2 e1 = new Example2();
 
-		final Packet result = wsg50.read(in, e1, true);
+		final Packet result = wsg50.readDebug(in, Example2.class, true);
 
 		assertTrue(result instanceof Example2);
-		Example2 e2 = (Example2) result;
-
-		assertTrue(e1 == e2);
 	}
 
 	@Test
 	public void testExample2Out() {
-		final byte[] expected = new byte[] { (byte) 0xAA, (byte) 0xAA, (byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
+		final byte[] expected = new byte[] { (byte) 0xAA, (byte) 0xAA,
+				(byte) 0xAA, 0x01, 0x00, 0x00, (byte) 0xE8, 0x10 };
 		final OutputArray out = new OutputArray();
 		final Example2 e2 = new Example2();
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 
 		wsg50.write(out, e2);
 
@@ -141,18 +141,13 @@ public class Wsg50CoderTests {
 
 	@Test
 	public void testExample3In() {
-		final byte[] input = new byte[] { (byte) 0xAA, (byte) 0xAA, (byte) 0xAA, 0x01, 0x04, 0x00, 0x12, 0x34, 0x56,
-				(byte) 0x78, 0, 0 };
+		final byte[] input = new byte[] { (byte) 0xAA, (byte) 0xAA,
+				(byte) 0xAA, 0x01, 0x04, 0x00, 0x12, 0x34, 0x56, (byte) 0x78,
+				0, 0 };
 		final InputArray in = new InputArray(input);
-		final Wsg50Coder wsg50 = new Wsg50Coder();
-		Example3 a = new Example3();
+		final PacketCoder wsg50 = new PacketCoder();
 
-		final Packet result = wsg50.read(in, a, false);
-
-		assertTrue(result instanceof Example3);
-		Example3 b = (Example3) result;
-		assertTrue(a == b);
-
-		assertEquals(0x78563412, b.get());
+		final Example3 result = wsg50.readDebug(in, Example3.class, false);
+		assertEquals(0x78563412, result.get());
 	}
 }

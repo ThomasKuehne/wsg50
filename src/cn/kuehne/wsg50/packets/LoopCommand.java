@@ -48,7 +48,8 @@ public class LoopCommand extends AbstractCommand {
 			throw new IllegalArgumentException("new data is null");
 		}
 		if (newData.length > 256) {
-			throw new IllegalArgumentException("excessive length: " + newData.length);
+			throw new IllegalArgumentException("excessive length: "
+					+ newData.length);
 		}
 		data = newData.clone();
 	}

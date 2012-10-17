@@ -23,70 +23,57 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
-import cn.kuehne.wsg50.TodoException;
-import cn.kuehne.wsg50.helper.AbstractCommand;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
+package cn.kuehne.wsg50.helper;
 
-public class PrePositionFingersCommand extends AbstractCommand {
-	private byte flags;
+import cn.kuehne.wsg50.BugException;
+import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PayloadHandler;
 
-	private float speed;
+public class PayloadHandlerDebug implements PayloadHandler {
+	private Class<? extends Packet> implementation;
+	private Packet lastPacket;
 
-	private float width;
-
-	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
-		setSpeed(0);
-		setWidth(0);
+	public PayloadHandlerDebug(Class<? extends Packet> imp) {
+		setImplementation(imp);
 	}
 
-	@Out(0)
-	public byte getFlags() {
-		return flags;
+	public Class<? extends Packet> getImplementation() {
+		return implementation;
 	}
 
-	@Out(2)
-	public float getSpeed() {
-		return speed;
+	public Packet getLastPacket() {
+		return lastPacket;
 	}
 
-	@Out(1)
-	public float getWidth() {
-		return width;
+	@Override
+	public void handlePayload(final byte rawId, final byte[] payload,
+			final boolean validCRC) {
+		try {
+			lastPacket = implementation.newInstance();
+		} catch (Exception e) {
+			throw new BugException(e);
+		}
+		final byte expectedID = lastPacket.getPacketID();
+
+		if (rawId != expectedID) {
+			throw new BugException(" packet id 0x"
+					+ Integer.toHexString(0xFF & rawId)
+					+ " doesn't match implementation id 0x"
+					+ Integer.toHexString(0xFF & expectedID));
+		}
+
+		if (!validCRC) {
+			throw new IllegalArgumentException("crc isn't valid");
+		}
+
+		lastPacket.setPayload(payload);
 	}
 
-	public boolean isClamp() {
-		throw new TodoException();
-	}
-
-	public boolean isRelative() {
-		throw new TodoException();
-	}
-
-	public void setClamp(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(0)
-	public void setFlags(byte newFlags) {
-		flags = newFlags;
-	}
-
-	public void setRelative(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(2)
-	public void setSpeed(float newSpeed) {
-		speed = newSpeed;
-	}
-
-	@In(1)
-	public void setWidth(float newWidth) {
-		width = newWidth;
+	public void setImplementation(Class<? extends Packet> imp) {
+		if (imp == null) {
+			throw new IllegalArgumentException("implementation class is null");
+		}
+		implementation = imp;
 	}
 }

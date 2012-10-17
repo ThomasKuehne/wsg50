@@ -27,14 +27,14 @@ package cn.kuehne.wsg50;
 
 import cn.kuehne.wsg50.helper.InputHelper;
 import cn.kuehne.wsg50.helper.OutputHelper;
+import cn.kuehne.wsg50.helper.PayloadHandlerAcknowledge;
+import cn.kuehne.wsg50.helper.PayloadHandlerCommand;
+import cn.kuehne.wsg50.helper.PayloadHandlerDebug;
 
-public class Wsg50Coder {
+public class PacketCoder {
 
-	public Packet read(final Input input, boolean isCommand, boolean validateCRC) {
-		return read(input, isCommand, null, validateCRC);
-	}
-
-	private Packet read(final Input input, final boolean isCommand, Packet packet, final boolean validateCRC) {
+	public synchronized void read(final Input input,
+			final PayloadHandler payloadHandler, final boolean validateCRC) {
 		if (input == null) {
 			throw new IllegalArgumentException("output is null");
 		}
@@ -44,8 +44,8 @@ public class Wsg50Coder {
 		for (int i = 0; i < 3; i++) {
 			final byte tmpByte = in.readByte();
 			if (tmpByte != (byte) 0xAA) {
-				throw new IllegalArgumentException("bad praeamble byte " + i + ": 0x"
-						+ Integer.toHexString(0xFF & tmpByte));
+				throw new IllegalArgumentException("bad praeamble byte " + i
+						+ ": 0x" + Integer.toHexString(0xFF & tmpByte));
 			}
 		}
 		final byte id = in.readByte();
@@ -57,37 +57,38 @@ public class Wsg50Coder {
 
 		final short crc = in.readShort();
 
+		final boolean hasValidCRC;
 		if (validateCRC) {
-			if (0 != in.getCRC()) {
-				throw new IllegalArgumentException("crc failed, expected 0 got "
-						+ Integer.toHexString(0xFFFF & in.getCRC()));
-			}
-		} else if (crc != 0) {
-			throw new IllegalArgumentException("expected 0x0000 crc data got " + Integer.toHexString(0xFFFF & crc));
+			hasValidCRC = (0 == in.getCRC());
+		} else {
+			hasValidCRC = (crc == 0);
 		}
 
-		if (packet == null) {
-			PacketID pID = PacketID.lookup(id);
-			if (pID == null) {
-				throw new BugException("unknown packet ID: " + Integer.toHexString(0xFF & id));
-			}
-			if (isCommand) {
-				packet = pID.getCommand();
-			} else {
-				packet = pID.getAcknowledge();
-			}
-		}
-		System.out.println();
-		packet.setPayload(payload);
-
-		return packet;
+		payloadHandler.handlePayload(id, payload, hasValidCRC);
 	}
 
-	public Packet read(final Input input, Packet packet, boolean validateCRC) {
-		return read(input, false, packet, validateCRC);
+	public Acknowledge readAcknowledge(final Input input,
+			final boolean validateCRC) {
+		final PayloadHandlerAcknowledge payloadHandler = new PayloadHandlerAcknowledge();
+		read(input, payloadHandler, validateCRC);
+		return payloadHandler.getLastAcknowledge();
 	}
 
-	public void write(final Output output, final Packet packet) {
+	public Command readCommand(final Input input, final boolean validateCRC) {
+		final PayloadHandlerCommand payloadHandler = new PayloadHandlerCommand();
+		read(input, payloadHandler, validateCRC);
+		return payloadHandler.getLastCommand();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Packet> T readDebug(final Input input, Class<T> imp,
+			final boolean validateCRC) {
+		final PayloadHandlerDebug payloadHandler = new PayloadHandlerDebug(imp);
+		read(input, payloadHandler, validateCRC);
+		return (T) payloadHandler.getLastPacket();
+	}
+
+	public synchronized void write(final Output output, final Packet packet) {
 		if (output == null) {
 			throw new IllegalArgumentException("output is null");
 		}
@@ -98,7 +99,8 @@ public class Wsg50Coder {
 		final byte id = packet.getPacketID();
 		final byte[] payload = packet.getPayload();
 		if (payload != null && payload.length > 0xFFFF) {
-			throw new IllegalArgumentException("excessive payload length: " + payload.length);
+			throw new IllegalArgumentException("excessive payload length: "
+					+ payload.length);
 		}
 
 		final OutputHelper out = new OutputHelper(output);

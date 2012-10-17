@@ -28,6 +28,14 @@ package cn.kuehne.wsg50;
 
 import cn.kuehne.wsg50.packets.DisconnectAnnouncementAcknowledge;
 import cn.kuehne.wsg50.packets.DisconnectAnnouncementCommand;
+import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge;
+import cn.kuehne.wsg50.packets.GetGraspingStateCommand;
+import cn.kuehne.wsg50.packets.GetOpeningWidthAcknowledge;
+import cn.kuehne.wsg50.packets.GetOpeningWidthCommand;
+import cn.kuehne.wsg50.packets.GetSystemLimitsAcknowledge;
+import cn.kuehne.wsg50.packets.GetSystemLimitsCommand;
+import cn.kuehne.wsg50.packets.GetSystemStateAcknowledge;
+import cn.kuehne.wsg50.packets.GetSystemStateCommand;
 import cn.kuehne.wsg50.packets.HomingAcknowledge;
 import cn.kuehne.wsg50.packets.HomingCommand;
 import cn.kuehne.wsg50.packets.LoopAcknowledge;
@@ -35,11 +43,35 @@ import cn.kuehne.wsg50.packets.LoopCommand;
 import cn.kuehne.wsg50.packets.PrePositionFingersCommand;
 
 public enum PacketID {
+	/** */
 	Loop((byte) 0x06, LoopCommand.class, LoopAcknowledge.class),
+	/** */
 	DisconnectAnnouncement((byte) 0x07, DisconnectAnnouncementCommand.class, DisconnectAnnouncementAcknowledge.class),
-	Homing((byte) 0x20, HomingCommand.class, HomingAcknowledge.class),
-	PrePositionFingers((byte) 0x21, PrePositionFingersCommand.class, null), ;
 
+	/** */
+	Homing((byte) 0x20, HomingCommand.class, HomingAcknowledge.class),
+	/** */
+	PrePositionFingers((byte) 0x21, PrePositionFingersCommand.class, null),
+	/** */
+	Stop((byte) 0x22, null, null),
+	/** */
+	FastStop((byte) 0x23, null, null),
+
+	/** */
+	SetAcceleration((byte) 0x30, null, null),
+
+	/** */
+	GetSystemState((byte) 0x40, GetSystemStateCommand.class, GetGraspingStateAcknowledge.class),
+	/** */
+	GetGraspingState((byte) 0x41, GetGraspingStateCommand.class, GetSystemStateAcknowledge.class),
+	/** */
+	GetGraspingStatistics((byte) 0x42, null, null),
+	/** */
+	GetOpeningWidth((byte) 0x43, GetOpeningWidthCommand.class, GetOpeningWidthAcknowledge.class),
+	
+	/** */
+	GetSystemLimits((byte) 0x53, GetSystemLimitsCommand.class, GetSystemLimitsAcknowledge.class);
+	
 	public static PacketID lookup(byte id) {
 		for (final PacketID pID : values()) {
 			if (pID.getId() == id) {

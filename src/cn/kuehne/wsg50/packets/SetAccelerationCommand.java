@@ -23,70 +23,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
-import cn.kuehne.wsg50.TodoException;
+import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractCommand;
 import cn.kuehne.wsg50.helper.In;
 import cn.kuehne.wsg50.helper.Out;
 
-public class PrePositionFingersCommand extends AbstractCommand {
-	private byte flags;
+public class SetAccelerationCommand extends AbstractCommand {
+	private float acc;
 
-	private float speed;
-
-	private float width;
-
-	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
-		setSpeed(0);
-		setWidth(0);
+	public SetAccelerationCommand() {
+		super(PacketID.SetAcceleration.getId());
 	}
 
 	@Out(0)
-	public byte getFlags() {
-		return flags;
-	}
-
-	@Out(2)
-	public float getSpeed() {
-		return speed;
-	}
-
-	@Out(1)
-	public float getWidth() {
-		return width;
-	}
-
-	public boolean isClamp() {
-		throw new TodoException();
-	}
-
-	public boolean isRelative() {
-		throw new TodoException();
-	}
-
-	public void setClamp(boolean b) {
-		throw new TodoException();
+	public float getAcceleration() {
+		return acc;
 	}
 
 	@In(0)
-	public void setFlags(byte newFlags) {
-		flags = newFlags;
-	}
-
-	public void setRelative(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(2)
-	public void setSpeed(float newSpeed) {
-		speed = newSpeed;
-	}
-
-	@In(1)
-	public void setWidth(float newWidth) {
-		width = newWidth;
+	public void setAcceleration(float newAcc) {
+		acc = newAcc;
 	}
 }

@@ -34,8 +34,8 @@ import cn.kuehne.wsg50.helper.IOHelperTest;
 import cn.kuehne.wsg50.packets.AllPacketTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PacketIDTests.class, PacketTests.class, CRC16Tests.class, IOHelperTest.class, Wsg50CoderTests.class,
-		AllPacketTests.class })
+@SuiteClasses({ PacketIDTests.class, PacketTests.class, CRC16Tests.class,
+		IOHelperTest.class, Wsg50CoderTests.class, AllPacketTests.class })
 public class AllTests {
 
 }

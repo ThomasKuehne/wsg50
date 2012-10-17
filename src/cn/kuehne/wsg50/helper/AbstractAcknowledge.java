@@ -26,6 +26,7 @@
 package cn.kuehne.wsg50.helper;
 
 import cn.kuehne.wsg50.Acknowledge;
+import cn.kuehne.wsg50.E;
 
 public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 	private short statusCode;
@@ -38,7 +39,7 @@ public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 	public byte[] getPayload() {
 		final OutputArray out = new OutputArray();
 		out.appendShort(getStatusCode());
-		if (0 == getStatusCode()) {
+		if (E.SUCCESS.getCode() == getStatusCode()) {
 			super.getPayload(out);
 		}
 		return out.getBytes();

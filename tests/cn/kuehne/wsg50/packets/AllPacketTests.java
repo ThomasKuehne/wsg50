@@ -30,8 +30,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ DisconnectAnnouncementCommandTests.class, DisconnectAnnouncementAcknowledgeTests.class,
-		HomingCommandTests.class, HomingAcknowledgeTests.class, LoopCommandTests.class, LoopAcknowledgeTests.class, })
+@SuiteClasses({ DisconnectAnnouncementCommandTests.class,
+		DisconnectAnnouncementAcknowledgeTests.class, HomingCommandTests.class,
+		HomingAcknowledgeTests.class, LoopCommandTests.class,
+		LoopAcknowledgeTests.class, })
 public class AllPacketTests {
 
 }

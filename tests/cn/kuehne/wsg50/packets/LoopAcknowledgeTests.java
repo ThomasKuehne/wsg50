@@ -27,14 +27,12 @@ package cn.kuehne.wsg50.packets;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import cn.kuehne.wsg50.Acknowledge;
-import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.Wsg50Coder;
 import cn.kuehne.wsg50.helper.InputArray;
 import cn.kuehne.wsg50.helper.OutputArray;
 
@@ -49,16 +47,15 @@ public class LoopAcknowledgeTests {
 		final LoopAcknowledge loop = (LoopAcknowledge) c;
 		loop.setLoopData(data);
 
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 
 		final OutputArray output = new OutputArray();
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final Packet result = wsg50.read(input, false, true);
+		final LoopAcknowledge result = wsg50.readDebug(input,
+				LoopAcknowledge.class, true);
 
-		assertTrue(result instanceof LoopAcknowledge);
-		final LoopAcknowledge loop2 = (LoopAcknowledge) result;
-		assertArrayEquals(data, loop2.getLoopData());
+		assertArrayEquals(data, result.getLoopData());
 	}
 }

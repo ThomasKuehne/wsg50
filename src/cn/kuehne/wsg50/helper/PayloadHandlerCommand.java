@@ -23,70 +23,34 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
-import cn.kuehne.wsg50.TodoException;
-import cn.kuehne.wsg50.helper.AbstractCommand;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
+package cn.kuehne.wsg50.helper;
 
-public class PrePositionFingersCommand extends AbstractCommand {
-	private byte flags;
+import cn.kuehne.wsg50.BugException;
+import cn.kuehne.wsg50.Command;
+import cn.kuehne.wsg50.PacketID;
+import cn.kuehne.wsg50.PayloadHandler;
 
-	private float speed;
+public class PayloadHandlerCommand implements PayloadHandler {
+	private Command lastCommand;
 
-	private float width;
-
-	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
-		setSpeed(0);
-		setWidth(0);
+	public Command getLastCommand() {
+		return lastCommand;
 	}
 
-	@Out(0)
-	public byte getFlags() {
-		return flags;
-	}
+	@Override
+	public void handlePayload(final byte rawId, final byte[] payload,
+			final boolean validCRC) {
+		final PacketID id = PacketID.lookup(rawId);
+		if (id == null) {
+			throw new BugException("unkown packet id: 0x"
+					+ Integer.toHexString(0xFF & rawId));
+		}
 
-	@Out(2)
-	public float getSpeed() {
-		return speed;
-	}
-
-	@Out(1)
-	public float getWidth() {
-		return width;
-	}
-
-	public boolean isClamp() {
-		throw new TodoException();
-	}
-
-	public boolean isRelative() {
-		throw new TodoException();
-	}
-
-	public void setClamp(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(0)
-	public void setFlags(byte newFlags) {
-		flags = newFlags;
-	}
-
-	public void setRelative(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(2)
-	public void setSpeed(float newSpeed) {
-		speed = newSpeed;
-	}
-
-	@In(1)
-	public void setWidth(float newWidth) {
-		width = newWidth;
+		if (!validCRC) {
+			throw new IllegalArgumentException("crc isn't valid");
+		}
+		lastCommand = id.getCommand();
+		lastCommand.setPayload(payload);
 	}
 }

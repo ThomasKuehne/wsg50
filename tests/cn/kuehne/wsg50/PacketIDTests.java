@@ -38,7 +38,9 @@ public class PacketIDTests {
 		for (final PacketID p : PacketID.values()) {
 			final int id = p.getId();
 			final int index = id - Byte.MIN_VALUE;
-			assertNull("duplicate packet id 0x" + Integer.toHexString(0xFF & id), ids[index]);
+			assertNull(
+					"duplicate packet id 0x" + Integer.toHexString(0xFF & id),
+					ids[index]);
 			ids[index] = p;
 		}
 	}

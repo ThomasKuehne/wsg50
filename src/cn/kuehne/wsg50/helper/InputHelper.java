@@ -31,8 +31,8 @@ import cn.kuehne.wsg50.BugException;
 import cn.kuehne.wsg50.Input;
 
 public class InputHelper implements Input {
-	private final Input in;
 	private final CRC16 crc;
+	private final Input in;
 
 	public InputHelper(Input i) {
 		if (i == null) {
@@ -62,11 +62,14 @@ public class InputHelper implements Input {
 
 		if (Byte.class.isAssignableFrom(c) || byte.class.isAssignableFrom(c)) {
 			return readByte();
-		} else if (Short.class.isAssignableFrom(c) || short.class.isAssignableFrom(c)) {
+		} else if (Short.class.isAssignableFrom(c)
+				|| short.class.isAssignableFrom(c)) {
 			return readShort();
-		} else if (Integer.class.isAssignableFrom(c) || int.class.isAssignableFrom(c)) {
+		} else if (Integer.class.isAssignableFrom(c)
+				|| int.class.isAssignableFrom(c)) {
 			return readInt();
-		} else if (Float.class.isAssignableFrom(c) || float.class.isAssignableFrom(c)) {
+		} else if (Float.class.isAssignableFrom(c)
+				|| float.class.isAssignableFrom(c)) {
 			return readFloat();
 		} else if (byte[].class.isAssignableFrom(c)) {
 			return readBytes();
@@ -104,7 +107,8 @@ public class InputHelper implements Input {
 		final byte c = readByte();
 		final byte d = readByte();
 
-		return (0xFF000000 & (d << 24)) | (0xFF0000 & (c << 16)) | (0xFF00 & (b << 8)) | (0xFF & a);
+		return (0xFF000000 & (d << 24)) | (0xFF0000 & (c << 16))
+				| (0xFF00 & (b << 8)) | (0xFF & a);
 	}
 
 	public short readShort() {

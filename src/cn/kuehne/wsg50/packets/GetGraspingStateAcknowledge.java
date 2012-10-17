@@ -23,70 +23,70 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
-import cn.kuehne.wsg50.TodoException;
-import cn.kuehne.wsg50.helper.AbstractCommand;
+import cn.kuehne.wsg50.PacketID;
+import cn.kuehne.wsg50.helper.AbstractAcknowledge;
 import cn.kuehne.wsg50.helper.In;
 import cn.kuehne.wsg50.helper.Out;
 
-public class PrePositionFingersCommand extends AbstractCommand {
-	private byte flags;
+public class GetGraspingStateAcknowledge extends AbstractAcknowledge {
+	public static enum GraspingState {
+		Error((byte) 7), Grasping((byte) 1), Holding((byte) 4), Idle((byte) 0), NoPartFound((byte) 2), PartLost(
+						(byte) 3), Positioning(
+				(byte) 6), Releasing((byte) 5);
 
-	private float speed;
+		public static GraspingState lookup(byte code) {
+			for (final GraspingState s : values()) {
+				if (s.getCode() == code) {
+					return s;
+				}
+			}
+			return null;
+		}
 
-	private float width;
+		private final byte code;
 
-	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
-		setSpeed(0);
-		setWidth(0);
+		private GraspingState(byte c) {
+			code = c;
+		}
+
+		public byte getCode() {
+			return code;
+		}
+	}
+
+	private GraspingState state;
+
+	public GetGraspingStateAcknowledge() {
+		super(PacketID.GetGraspingState.getId());
+		setState(GraspingState.Idle);
+	}
+
+	public GraspingState getState() {
+		return state;
 	}
 
 	@Out(0)
-	public byte getFlags() {
-		return flags;
+	public byte getStateRaw() {
+		return state.getCode();
 	}
 
-	@Out(2)
-	public float getSpeed() {
-		return speed;
-	}
-
-	@Out(1)
-	public float getWidth() {
-		return width;
-	}
-
-	public boolean isClamp() {
-		throw new TodoException();
-	}
-
-	public boolean isRelative() {
-		throw new TodoException();
-	}
-
-	public void setClamp(boolean b) {
-		throw new TodoException();
+	public void setState(GraspingState newState) {
+		if (newState == null) {
+			throw new IllegalArgumentException("new state is null");
+		}
+		state = newState;
 	}
 
 	@In(0)
-	public void setFlags(byte newFlags) {
-		flags = newFlags;
+	public void setStateRaw(byte newState) {
+		setState(GraspingState.lookup(newState));
 	}
 
-	public void setRelative(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(2)
-	public void setSpeed(float newSpeed) {
-		speed = newSpeed;
-	}
-
-	@In(1)
-	public void setWidth(float newWidth) {
-		width = newWidth;
+	@Override
+	public String toString() {
+		return PacketID.GetGraspingState + " state:" + getState();
 	}
 }

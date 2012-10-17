@@ -29,6 +29,10 @@ package cn.kuehne.wsg50;
 public class BugException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
+	public BugException(Exception e) {
+		super(e);
+	}
+
 	public BugException(final String message) {
 		super(message);
 	}

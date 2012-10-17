@@ -46,17 +46,21 @@ public class AbstractPacket implements Packet {
 			if (in != null) {
 				final int index = in.value();
 				if (index < 0) {
-					throw new BugException("negative In.value " + index + " for " + m);
+					throw new BugException("negative In.value " + index
+							+ " for " + m);
 				}
 				if (m.getParameterTypes().length != 1) {
-					throw new BugException("In method shoul require exactly one parameter " + m);
+					throw new BugException(
+							"In method shoul require exactly one parameter "
+									+ m);
 				}
 				while (index >= methods.size()) {
 					methods.add(null);
 				}
 				final Method old = methods.get(index);
 				if (null != old) {
-					throw new BugException("duplicate In.value " + index + " for " + m + " and " + old);
+					throw new BugException("duplicate In.value " + index
+							+ " for " + m + " and " + old);
 				}
 				methods.set(index, m);
 			}
@@ -71,17 +75,20 @@ public class AbstractPacket implements Packet {
 			if (out != null) {
 				final int index = out.value();
 				if (index < 0) {
-					throw new BugException("negative Out.value " + index + " for " + m);
+					throw new BugException("negative Out.value " + index
+							+ " for " + m);
 				}
 				if (m.getParameterTypes().length != 0) {
-					throw new BugException("Out method shouln'd require parameters " + m);
+					throw new BugException(
+							"Out method shouln'd require parameters " + m);
 				}
 				while (index >= methods.size()) {
 					methods.add(null);
 				}
 				final Method old = methods.get(index);
 				if (null != old) {
-					throw new BugException("duplicate Out.value " + index + " for " + m + " and " + old);
+					throw new BugException("duplicate Out.value " + index
+							+ " for " + m + " and " + old);
 				}
 				methods.set(index, m);
 			}

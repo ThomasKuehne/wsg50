@@ -30,8 +30,8 @@ import cn.kuehne.wsg50.BugException;
 import cn.kuehne.wsg50.Output;
 
 public class OutputHelper implements Output {
-	private final Output out;
 	private final CRC16 crc;
+	private final Output out;
 
 	public OutputHelper(final Output o) {
 		if (o == null) {
@@ -100,8 +100,9 @@ public class OutputHelper implements Output {
 			final char c = cs.charAt(index);
 			final byte b = (byte) (0xFF & c);
 			if ((0xFFFF & c) != (0xFF & b)) {
-				throw new IllegalArgumentException("illegal character \"" + c + "\" ("
-						+ Integer.toHexString(0xFFFF & c) + ") at position " + index);
+				throw new IllegalArgumentException("illegal character \"" + c
+						+ "\" (" + Integer.toHexString(0xFFFF & c)
+						+ ") at position " + index);
 			}
 
 			appendByte((byte) (0xFF & b));

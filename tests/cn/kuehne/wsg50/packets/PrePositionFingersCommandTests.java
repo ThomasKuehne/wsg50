@@ -28,14 +28,12 @@ package cn.kuehne.wsg50.packets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import cn.kuehne.wsg50.Command;
-import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.Wsg50Coder;
 import cn.kuehne.wsg50.helper.InputArray;
 import cn.kuehne.wsg50.helper.OutputArray;
 
@@ -53,17 +51,16 @@ public class PrePositionFingersCommandTests {
 		x.setSpeed(speed);
 		x.setWidth(width);
 
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 
 		final OutputArray output = new OutputArray();
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final Packet result = wsg50.read(input, true, true);
+		final PrePositionFingersCommand result = wsg50.readDebug(input,
+				PrePositionFingersCommand.class, true);
 
-		assertTrue(result instanceof PrePositionFingersCommand);
-		final PrePositionFingersCommand y = (PrePositionFingersCommand) result;
-		assertEquals(speed, y.getSpeed(), 0);
-		assertEquals(width, y.getWidth(), 0);
+		assertEquals(speed, result.getSpeed(), 0);
+		assertEquals(width, result.getWidth(), 0);
 	}
 }

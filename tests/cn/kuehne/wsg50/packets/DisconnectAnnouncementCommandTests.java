@@ -26,14 +26,12 @@
 package cn.kuehne.wsg50.packets;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import cn.kuehne.wsg50.Command;
-import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.Wsg50Coder;
 import cn.kuehne.wsg50.helper.InputArray;
 import cn.kuehne.wsg50.helper.OutputArray;
 
@@ -44,14 +42,15 @@ public class DisconnectAnnouncementCommandTests {
 		final Command c = PacketID.DisconnectAnnouncement.getCommand();
 		assertNotNull(c);
 
-		final Wsg50Coder wsg50 = new Wsg50Coder();
+		final PacketCoder wsg50 = new PacketCoder();
 
 		final OutputArray output = new OutputArray();
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final Packet result = wsg50.read(input, true, true);
+		final DisconnectAnnouncementCommand result = wsg50.readDebug(input,
+				DisconnectAnnouncementCommand.class, true);
 
-		assertTrue(result instanceof DisconnectAnnouncementCommand);
+		assertNotNull(result);
 	}
 }

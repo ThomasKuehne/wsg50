@@ -23,70 +23,38 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
-import cn.kuehne.wsg50.TodoException;
-import cn.kuehne.wsg50.helper.AbstractCommand;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
+package cn.kuehne.wsg50;
 
-public class PrePositionFingersCommand extends AbstractCommand {
-	private byte flags;
+public enum E {
+	ACCESS_DENIED(
+	(byte) 16), ALREADY_OPEN((byte) 17), ALREADY_RUNNING((byte) 4), AXIS_BLOCKED((byte) 29), CHECKSUM_ERROR(
+			(byte) 11), CMD_ABORTED(
+			(byte) 19), CMD_FAILED((byte) 18), CMD_FORMAT_ERROR((byte) 15), CMD_PENDING((byte) 26), CMD_UNKNOWN((byte) 14), FEATURNOT_SUPPORTED((byte) 5), FILEXISTS((byte) 30), INCONSISTENT_DATA(
+			(byte) 6), INDEX_OUT_OF_BOUNDS(
+			(byte) 25), INSUFFICIENT_RESOURCES((byte) 10), INVALID_HANDLE((byte) 20), INVALID_PARAMETER((byte) 24), IO_ERROR((byte) 23), NO_PARAM_EXPECTED((byte) 12), NO_SENSOR((byte) 2), NOT_AVAILABLE((byte) 1), NOT_ENOUGH_PARAMS(
+			(byte) 13), NOT_FOUND((byte) 21), NOT_INITIALIZED(
+					(byte) 3), NOT_OPEN(
+			(byte) 22), OVERRUN((byte) 27), RANGERROR(
+			(byte) 28), READ_ERROR((byte) 8), SUCCESS((byte) 0), TIMEOUT((byte) 7), WRITERROR(
+			(byte) 9);
 
-	private float speed;
-
-	private float width;
-
-	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
-		setSpeed(0);
-		setWidth(0);
+	public static E lookup(byte id) {
+		for (final E e : values()) {
+			if (e.getCode() == id) {
+				return e;
+			}
+		}
+		return null;
 	}
 
-	@Out(0)
-	public byte getFlags() {
-		return flags;
+	private final byte code;
+
+	private E(byte c) {
+		code = c;
 	}
 
-	@Out(2)
-	public float getSpeed() {
-		return speed;
-	}
-
-	@Out(1)
-	public float getWidth() {
-		return width;
-	}
-
-	public boolean isClamp() {
-		throw new TodoException();
-	}
-
-	public boolean isRelative() {
-		throw new TodoException();
-	}
-
-	public void setClamp(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(0)
-	public void setFlags(byte newFlags) {
-		flags = newFlags;
-	}
-
-	public void setRelative(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(2)
-	public void setSpeed(float newSpeed) {
-		speed = newSpeed;
-	}
-
-	@In(1)
-	public void setWidth(float newWidth) {
-		width = newWidth;
+	public byte getCode() {
+		return code;
 	}
 }

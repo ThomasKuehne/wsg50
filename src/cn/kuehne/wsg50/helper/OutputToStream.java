@@ -23,70 +23,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
-import cn.kuehne.wsg50.TodoException;
-import cn.kuehne.wsg50.helper.AbstractCommand;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
+package cn.kuehne.wsg50.helper;
 
-public class PrePositionFingersCommand extends AbstractCommand {
-	private byte flags;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
 
-	private float speed;
+import cn.kuehne.wsg50.Output;
 
-	private float width;
+public class OutputToStream implements Output, Closeable {
+	public OutputStream dest;
 
-	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
-		setSpeed(0);
-		setWidth(0);
+	public OutputToStream(OutputStream d) {
+		dest = d;
 	}
 
-	@Out(0)
-	public byte getFlags() {
-		return flags;
+	@Override
+	public void close() {
+		try {
+			dest.close();
+			dest = null;
+		} catch (Exception e) {
+		}
+
 	}
 
-	@Out(2)
-	public float getSpeed() {
-		return speed;
+	@Override
+	public void writeByte(byte b) {
+		try {
+			dest.write(b);
+		} catch (IOException e) {
+			close();
+			throw new RuntimeException("io", e);
+		}
 	}
 
-	@Out(1)
-	public float getWidth() {
-		return width;
-	}
-
-	public boolean isClamp() {
-		throw new TodoException();
-	}
-
-	public boolean isRelative() {
-		throw new TodoException();
-	}
-
-	public void setClamp(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(0)
-	public void setFlags(byte newFlags) {
-		flags = newFlags;
-	}
-
-	public void setRelative(boolean b) {
-		throw new TodoException();
-	}
-
-	@In(2)
-	public void setSpeed(float newSpeed) {
-		speed = newSpeed;
-	}
-
-	@In(1)
-	public void setWidth(float newWidth) {
-		width = newWidth;
-	}
 }
