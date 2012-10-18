@@ -49,7 +49,7 @@ public class GetSystemLimitsAcknowledge extends AbstractAcknowledge {
 	private float stroke;
 
 	public GetSystemLimitsAcknowledge() {
-		super(PacketID.GetSystemLimits.getId());
+		super(PacketID.GetSystemLimits);
 	}
 
 	@Out(4)
@@ -96,26 +96,32 @@ public class GetSystemLimitsAcknowledge extends AbstractAcknowledge {
 	public void setMaxAcc(float maxAcc) {
 		this.maxAcc = maxAcc;
 	}
+
 	@In(6)
 	public void setMaxForce(float maxForce) {
 		this.maxForce = maxForce;
 	}
+
 	@In(2)
 	public void setMaxSpeed(float maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
+
 	@In(3)
 	public void setMinAcc(float minAcc) {
 		this.minAcc = minAcc;
 	}
+
 	@In(5)
 	public void setMinForce(float minForce) {
 		this.minForce = minForce;
 	}
+
 	@In(1)
 	public void setMinSpeed(float minSpeed) {
 		this.minSpeed = minSpeed;
 	}
+
 	@In(7)
 	public void setOvrForce(float ovrForce) {
 		this.ovrForce = ovrForce;
@@ -124,13 +130,5 @@ public class GetSystemLimitsAcknowledge extends AbstractAcknowledge {
 	@In(0)
 	public void setStroke(float stroke) {
 		this.stroke = stroke;
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetSystemLimits + " stroke:" + getStroke() + " speed:"
-				+ getMinSpeed() + "-" + getMaxSpeed() + " acc:" + getMinAcc()
-				+ "-" + getMaxAcc() + " force:" + getMinForce() + "-"
-				+ getMaxForce() + "-" + getOvrForce();
 	}
 }

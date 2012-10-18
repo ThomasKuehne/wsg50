@@ -26,11 +26,104 @@
 
 package cn.kuehne.wsg50;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+
+import java.lang.reflect.Method;
+import java.util.List;
 
 import org.junit.Test;
 
+import cn.kuehne.wsg50.helper.AbstractPacket;
+
 public class PacketIDTests {
+	private void checkAbstractPacket(AbstractPacket packet, String label) {
+		final List<Method> inMethods = packet.findInMethods();
+		final List<Method> outMethods = packet.findOutMethods();
+
+		assertEquals(label + " inOutSize", inMethods.size(), outMethods.size());
+		for (int methodIndex = 0; methodIndex < inMethods.size(); methodIndex++) {
+			final Method in = inMethods.get(methodIndex);
+			assertNotNull(label + " in[" + methodIndex + "]", in);
+
+			final Method out = outMethods.get(methodIndex);
+			assertNotNull(label + " out[" + methodIndex + "]", out);
+
+			final Class<?>[] params = in.getParameterTypes();
+			assertEquals(label + " out[" + methodIndex + "]num", 1, params.length);
+
+			assertEquals(label + " type[" + methodIndex + "]", out.getReturnType(), params[0]);
+		}
+	}
+
+	private void checkAcknowledge(Acknowledge acknowledge, PacketID id) {
+		final String label = id.toString() + " Acknowledge";
+		try {
+			final byte rawId = id.getId();
+			final byte acknowledgeId = acknowledge.getPacketID();
+
+			assertEquals(label + " id", rawId, acknowledgeId);
+
+			assertTrue(label + " name", acknowledge.getClass().getName().endsWith("Acknowledge"));
+
+			if (acknowledge instanceof AbstractPacket) {
+				checkAbstractPacket((AbstractPacket) acknowledge, label);
+			}
+			byte[] payload = acknowledge.getPayload();
+			assertNotNull(label + " get", payload);
+			acknowledge.setPayload(payload);
+		} catch (Exception e) {
+			throw new BugException(label, e);
+		}
+	}
+
+	private void checkCommand(Command command, PacketID id) {
+
+		final String label = id.toString() + " Command";
+		try {
+			final byte rawId = id.getId();
+			final byte commandId = command.getPacketID();
+
+			assertEquals(label + " id", rawId, commandId);
+
+			assertTrue(label + " name", command.getClass().getName().endsWith("Command"));
+
+			if (command instanceof AbstractPacket) {
+				checkAbstractPacket((AbstractPacket) command, label);
+			}
+			byte[] payload = command.getPayload();
+			assertNotNull(label + " get", payload);
+			command.setPayload(payload);
+		} catch (Exception e) {
+			throw new BugException(label, e);
+		}
+	}
+
+	@Test
+	public void testAcknowledgements() {
+		for (final PacketID id : PacketID.values()) {
+			final Acknowledge acknowledge;
+			try {
+				acknowledge = id.getAcknowledge();
+			} catch (TodoException e) {
+				continue;
+			}
+			checkAcknowledge(acknowledge, id);
+		}
+	}
+
+	@Test
+	public void testCommands() {
+		for (final PacketID id : PacketID.values()) {
+			final Command command;
+			try {
+				command = id.getCommand();
+			} catch (TodoException e) {
+				continue;
+			}
+			checkCommand(command, id);
+		}
+	}
+
 	@Test
 	public void testUniqueIDs() {
 		final PacketID[] ids = new PacketID[256];
@@ -38,9 +131,7 @@ public class PacketIDTests {
 		for (final PacketID p : PacketID.values()) {
 			final int id = p.getId();
 			final int index = id - Byte.MIN_VALUE;
-			assertNull(
-					"duplicate packet id 0x" + Integer.toHexString(0xFF & id),
-					ids[index]);
+			assertNull("duplicate packet id 0x" + Integer.toHexString(0xFF & id), ids[index]);
 			ids[index] = p;
 		}
 	}

@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cn.kuehne.wsg50.helper;
+package cn.kuehne.wsg50.debug;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -36,6 +36,9 @@ import cn.kuehne.wsg50.E;
 import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.PayloadHandler;
+import cn.kuehne.wsg50.helper.InputFromStream;
+import cn.kuehne.wsg50.helper.OutputToStream;
+import cn.kuehne.wsg50.helper.PayloadHandlerCommand;
 import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge;
 import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge.GraspingState;
 import cn.kuehne.wsg50.packets.GetOpeningWidthAcknowledge;
@@ -58,8 +61,7 @@ public class Mirror implements PayloadHandler, Runnable {
 
 		@Override
 		public byte[] getPayload() {
-			return new byte[] { (byte) (code & 0xFF),
-					(byte) ((code >> 8) & 0xFF) };
+			return new byte[] { (byte) (code & 0xFF), (byte) ((code >> 8) & 0xFF) };
 		}
 
 		@Override
@@ -128,8 +130,7 @@ public class Mirror implements PayloadHandler, Runnable {
 	@Override
 	public void handlePayload(byte rawId, byte[] payload, boolean validCRC) {
 		final PacketID id = PacketID.lookup(rawId);
-		System.out.println(id + " (" + rawId + " 0x"
-				+ Integer.toHexString(0xFF & rawId) + ") "
+		System.out.println(id + " (" + rawId + " 0x" + Integer.toHexString(0xFF & rawId) + ") "
 				+ (validCRC ? "goodCRC" : "badCRC"));
 		try {
 			commandHandler.handlePayload(rawId, payload, validCRC);
@@ -162,23 +163,19 @@ public class Mirror implements PayloadHandler, Runnable {
 		}
 
 		try {
-			System.out
-					.println("listening on " + server.getLocalSocketAddress());
+			System.out.println("listening on " + server.getLocalSocketAddress());
 
 			while (true) {
 				try {
 					final Socket client = server.accept();
 					try {
-						final InputFromStream in = new InputFromStream(
-								client.getInputStream());
-						final OutputToStream out = new OutputToStream(
-								client.getOutputStream());
+						final InputFromStream in = new InputFromStream(client.getInputStream());
+						final OutputToStream out = new OutputToStream(client.getOutputStream());
 						try {
 							while (true) {
 								pc.read(in, this, true);
 
-								Acknowledge a = getAcknowledge(lastRawId,
-										command);
+								Acknowledge a = getAcknowledge(lastRawId, command);
 								System.out.println("\t" + a);
 								pc.write(out, a);
 							}

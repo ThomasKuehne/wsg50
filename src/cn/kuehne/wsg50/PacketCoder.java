@@ -33,8 +33,7 @@ import cn.kuehne.wsg50.helper.PayloadHandlerDebug;
 
 public class PacketCoder {
 
-	public synchronized void read(final Input input,
-			final PayloadHandler payloadHandler, final boolean validateCRC) {
+	public synchronized void read(final Input input, final PayloadHandler payloadHandler, final boolean validateCRC) {
 		if (input == null) {
 			throw new IllegalArgumentException("output is null");
 		}
@@ -44,8 +43,8 @@ public class PacketCoder {
 		for (int i = 0; i < 3; i++) {
 			final byte tmpByte = in.readByte();
 			if (tmpByte != (byte) 0xAA) {
-				throw new IllegalArgumentException("bad praeamble byte " + i
-						+ ": 0x" + Integer.toHexString(0xFF & tmpByte));
+				throw new IllegalArgumentException("bad praeamble byte " + i + ": 0x"
+						+ Integer.toHexString(0xFF & tmpByte));
 			}
 		}
 		final byte id = in.readByte();
@@ -67,8 +66,7 @@ public class PacketCoder {
 		payloadHandler.handlePayload(id, payload, hasValidCRC);
 	}
 
-	public Acknowledge readAcknowledge(final Input input,
-			final boolean validateCRC) {
+	public Acknowledge readAcknowledge(final Input input, final boolean validateCRC) {
 		final PayloadHandlerAcknowledge payloadHandler = new PayloadHandlerAcknowledge();
 		read(input, payloadHandler, validateCRC);
 		return payloadHandler.getLastAcknowledge();
@@ -81,8 +79,7 @@ public class PacketCoder {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Packet> T readDebug(final Input input, Class<T> imp,
-			final boolean validateCRC) {
+	public <T extends Packet> T readDebug(final Input input, Class<T> imp, final boolean validateCRC) {
 		final PayloadHandlerDebug payloadHandler = new PayloadHandlerDebug(imp);
 		read(input, payloadHandler, validateCRC);
 		return (T) payloadHandler.getLastPacket();
@@ -99,8 +96,7 @@ public class PacketCoder {
 		final byte id = packet.getPacketID();
 		final byte[] payload = packet.getPayload();
 		if (payload != null && payload.length > 0xFFFF) {
-			throw new IllegalArgumentException("excessive payload length: "
-					+ payload.length);
+			throw new IllegalArgumentException("excessive payload length: " + payload.length);
 		}
 
 		final OutputHelper out = new OutputHelper(output);

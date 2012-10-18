@@ -25,7 +25,7 @@
  */
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.Loop;
+import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractAcknowledge;
 import cn.kuehne.wsg50.helper.In;
 import cn.kuehne.wsg50.helper.Out;
@@ -34,7 +34,8 @@ public class LoopAcknowledge extends AbstractAcknowledge {
 	private byte[] data;
 
 	public LoopAcknowledge() {
-		super(Loop.getId());
+		super(PacketID.Loop);
+		setLoopData(new byte[0]);
 	}
 
 	@Out(0)
@@ -48,8 +49,7 @@ public class LoopAcknowledge extends AbstractAcknowledge {
 			throw new IllegalArgumentException("new data is null");
 		}
 		if (newData.length > 256) {
-			throw new IllegalArgumentException("excessive length: "
-					+ newData.length);
+			throw new IllegalArgumentException("excessive length: " + newData.length);
 		}
 		data = newData.clone();
 	}

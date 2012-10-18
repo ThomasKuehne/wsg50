@@ -35,7 +35,7 @@ public class GetOpeningWidthAcknowledge extends AbstractAcknowledge {
 	private float width;
 
 	public GetOpeningWidthAcknowledge() {
-		super(PacketID.GetOpeningWidth.getId());
+		super(PacketID.GetOpeningWidth);
 	}
 
 	@Out(0)
@@ -46,10 +46,5 @@ public class GetOpeningWidthAcknowledge extends AbstractAcknowledge {
 	@In(0)
 	public void setWidth(float newWidth) {
 		width = newWidth;
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetOpeningWidth + " width:" + getWidth();
 	}
 }

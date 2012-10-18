@@ -25,7 +25,7 @@
  */
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.PrePositionFingers;
+import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.TodoException;
 import cn.kuehne.wsg50.helper.AbstractCommand;
 import cn.kuehne.wsg50.helper.In;
@@ -39,7 +39,7 @@ public class PrePositionFingersCommand extends AbstractCommand {
 	private float width;
 
 	public PrePositionFingersCommand() {
-		super(PrePositionFingers.getId());
+		super(PacketID.PrePositionFingers);
 		setSpeed(0);
 		setWidth(0);
 	}

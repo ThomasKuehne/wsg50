@@ -26,21 +26,7 @@
 
 package cn.kuehne.wsg50;
 
-import cn.kuehne.wsg50.packets.DisconnectAnnouncementAcknowledge;
-import cn.kuehne.wsg50.packets.DisconnectAnnouncementCommand;
-import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge;
-import cn.kuehne.wsg50.packets.GetGraspingStateCommand;
-import cn.kuehne.wsg50.packets.GetOpeningWidthAcknowledge;
-import cn.kuehne.wsg50.packets.GetOpeningWidthCommand;
-import cn.kuehne.wsg50.packets.GetSystemLimitsAcknowledge;
-import cn.kuehne.wsg50.packets.GetSystemLimitsCommand;
-import cn.kuehne.wsg50.packets.GetSystemStateAcknowledge;
-import cn.kuehne.wsg50.packets.GetSystemStateCommand;
-import cn.kuehne.wsg50.packets.HomingAcknowledge;
-import cn.kuehne.wsg50.packets.HomingCommand;
-import cn.kuehne.wsg50.packets.LoopAcknowledge;
-import cn.kuehne.wsg50.packets.LoopCommand;
-import cn.kuehne.wsg50.packets.PrePositionFingersCommand;
+import cn.kuehne.wsg50.packets.*;
 
 public enum PacketID {
 	/** */
@@ -53,25 +39,68 @@ public enum PacketID {
 	/** */
 	PrePositionFingers((byte) 0x21, PrePositionFingersCommand.class, null),
 	/** */
-	Stop((byte) 0x22, null, null),
+	Stop((byte) 0x22, StopCommand.class, StopAcknowledge.class),
 	/** */
-	FastStop((byte) 0x23, null, null),
+	FastStop((byte) 0x23, FastStopCommand.class, FastStopAcknowledge.class),
+	/** */
+	AcknowledgeFault((byte) 0x24, null, null),
+	/** */
+	GraspPart((byte) 0x25, GraspPartCommand.class, GraspPartAcknowledge.class),
+	/** */
+	ReleasePart((byte) 0x26, ReleasePartCommand.class, ReleasePartAcknowledge.class),
 
 	/** */
-	SetAcceleration((byte) 0x30, null, null),
+	SetAcceleration((byte) 0x30, SetAccelerationCommand.class, SetAccelerationAcknowledge.class),
+	/** */
+	GetAcceleration((byte) 0x31, GetAccelerationCommand.class, GetAccelerationAcknowledge.class),
+	/** */
+	SetForceLimit((byte) 0x32, SetForceLimitCommand.class, SetForceLimitAcknowledge.class),
+	/** */
+	GetForceLimit((byte) 0x33, GetForceLimitCommand.class, GetForceLimitAcknowledge.class),
+	/** */
+	SetSoftLimits((byte) 0x34, SetSoftLimitsCommand.class, SetSoftLimitsAcknowledge.class),
+	/** */
+	GetSoftLimits((byte) 0x35, GetSoftLimitsCommand.class, GetSoftLimitsAcknowledge.class),
+	/** */
+	ClearSoftLimits((byte) 0x36, ClearSoftLimitsCommand.class, ClearSoftLimitsAcknowledge.class),
+	/** */
+	OverdriveMode((byte) 0x37, null, null),
+	/** */
+	TareForceSensor((byte) 0x38, null, null),
 
 	/** */
-	GetSystemState((byte) 0x40, GetSystemStateCommand.class, GetGraspingStateAcknowledge.class),
+	GetSystemState((byte) 0x40, GetSystemStateCommand.class, GetSystemStateAcknowledge.class),
 	/** */
-	GetGraspingState((byte) 0x41, GetGraspingStateCommand.class, GetSystemStateAcknowledge.class),
+	GetGraspingState((byte) 0x41, GetGraspingStateCommand.class, GetGraspingStateAcknowledge.class),
 	/** */
 	GetGraspingStatistics((byte) 0x42, null, null),
 	/** */
 	GetOpeningWidth((byte) 0x43, GetOpeningWidthCommand.class, GetOpeningWidthAcknowledge.class),
-	
 	/** */
-	GetSystemLimits((byte) 0x53, GetSystemLimitsCommand.class, GetSystemLimitsAcknowledge.class);
-	
+	GetSpeed((byte) 0x44, null, null),
+	/** */
+	GetForce((byte) 0x45, null, null),
+	/** */
+	GetTemperature((byte) 0x46, null, null),
+
+	/** */
+	GetSystemInformation((byte) 0x50, null, null),
+	/** */
+	SetDeviceTag((byte) 0x51, null, null),
+	/** */
+	GetDeviceTag((byte) 0x52, null, null),
+	/** */
+	GetSystemLimits((byte) 0x53, GetSystemLimitsCommand.class, GetSystemLimitsAcknowledge.class),
+
+	/** */
+	GetFingerInfo((byte) 0x60, null, null),
+	/** */
+	GetFingerFlags((byte) 0x61, null, null),
+	/** */
+	FingerPowerControl((byte) 0x62, null, null),
+	/** */
+	GetFingerData((byte) 0x63, null, null);
+
 	public static PacketID lookup(byte id) {
 		for (final PacketID pID : values()) {
 			if (pID.getId() == id) {

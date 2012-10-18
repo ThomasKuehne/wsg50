@@ -39,12 +39,10 @@ public class PayloadHandlerAcknowledge implements PayloadHandler {
 	}
 
 	@Override
-	public void handlePayload(final byte rawId, final byte[] payload,
-			final boolean validCRC) {
+	public void handlePayload(final byte rawId, final byte[] payload, final boolean validCRC) {
 		final PacketID id = PacketID.lookup(rawId);
 		if (id == null) {
-			throw new BugException("unkown packet id: 0x"
-					+ Integer.toHexString(0xFF & rawId));
+			throw new BugException("unkown packet id: 0x" + Integer.toHexString(0xFF & rawId));
 		}
 
 		if (!validCRC) {

@@ -25,7 +25,7 @@
  */
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.Homing;
+import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractCommand;
 import cn.kuehne.wsg50.helper.In;
 import cn.kuehne.wsg50.helper.Out;
@@ -33,32 +33,37 @@ import cn.kuehne.wsg50.helper.Out;
 public class HomingCommand extends AbstractCommand {
 
 	public static enum Direction {
-		DEFAULT((byte) 0), NEGATIVE((byte) 2), POSITIVE((byte) 1);
+		/** */
+		DEFAULT((byte) 0),
+		/** */
+		NEGATIVE((byte) 2),
+		/** */
+		POSITIVE((byte) 1);
 
-		public static Direction lookup(final byte v) {
+		public static Direction lookup(final byte code) {
 			for (final Direction d : values()) {
-				if (d.getValue() == v) {
+				if (d.getCode() == code) {
 					return d;
 				}
 			}
 			return null;
 		}
 
-		private final byte value;
+		private final byte code;
 
-		private Direction(byte b) {
-			value = b;
+		private Direction(byte c) {
+			code = c;
 		}
 
-		public byte getValue() {
-			return value;
+		public byte getCode() {
+			return code;
 		}
 	}
 
 	private Direction direction;
 
 	public HomingCommand() {
-		super(Homing.getId());
+		super(PacketID.Homing);
 
 		setDirection(Direction.DEFAULT);
 	}
@@ -69,10 +74,10 @@ public class HomingCommand extends AbstractCommand {
 
 	@Out(0)
 	public byte getDirectionRaw() {
-		return direction.getValue();
+		return direction.getCode();
 	}
 
-	public void setDirection(Direction newDirection) {
+	public void setDirection(final Direction newDirection) {
 		if (newDirection == null) {
 			throw new IllegalArgumentException("new direction is null");
 		}
@@ -80,7 +85,7 @@ public class HomingCommand extends AbstractCommand {
 	}
 
 	@In(0)
-	public void setDirectionRaw(byte d) {
-		setDirection(Direction.lookup(d));
+	public void setDirectionRaw(final byte code) {
+		setDirection(Direction.lookup(code));
 	}
 }

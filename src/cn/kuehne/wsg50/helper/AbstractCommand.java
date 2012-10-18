@@ -26,9 +26,16 @@
 package cn.kuehne.wsg50.helper;
 
 import cn.kuehne.wsg50.Command;
+import cn.kuehne.wsg50.PacketID;
 
 public class AbstractCommand extends AbstractPacket implements Command {
-	protected AbstractCommand(byte pId) {
-		super(pId);
+	protected AbstractCommand(PacketID pID) {
+		super(pID);
+	}
+
+	@Override
+	public final String toString() {
+		// yes, calling super is intended (see "final")
+		return super.toString();
 	}
 }

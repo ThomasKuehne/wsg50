@@ -25,7 +25,7 @@
  */
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.Loop;
+import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractCommand;
 import cn.kuehne.wsg50.helper.In;
 import cn.kuehne.wsg50.helper.Out;
@@ -34,7 +34,8 @@ public class LoopCommand extends AbstractCommand {
 	private byte[] data;
 
 	public LoopCommand() {
-		super(Loop.getId());
+		super(PacketID.Loop);
+		setLoopData(new byte[0]);
 	}
 
 	@Out(0)
@@ -48,8 +49,7 @@ public class LoopCommand extends AbstractCommand {
 			throw new IllegalArgumentException("new data is null");
 		}
 		if (newData.length > 256) {
-			throw new IllegalArgumentException("excessive length: "
-					+ newData.length);
+			throw new IllegalArgumentException("excessive length: " + newData.length);
 		}
 		data = newData.clone();
 	}

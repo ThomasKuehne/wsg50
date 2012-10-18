@@ -25,11 +25,11 @@
  */
 package cn.kuehne.wsg50.packets;
 
-import static cn.kuehne.wsg50.PacketID.Homing;
+import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractAcknowledge;
 
 public class HomingAcknowledge extends AbstractAcknowledge {
 	public HomingAcknowledge() {
-		super(Homing.getId());
+		super(PacketID.Homing);
 	}
 }

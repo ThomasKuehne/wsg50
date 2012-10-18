@@ -31,36 +31,36 @@ import java.util.ArrayList;
 
 import cn.kuehne.wsg50.BugException;
 import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PacketID;
 
 public class AbstractPacket implements Packet {
-	private final byte id;
+	private final PacketID id;
 
-	protected AbstractPacket(byte pId) {
-		id = pId;
+	protected AbstractPacket(PacketID pID) {
+		if (pID == null) {
+			throw new IllegalArgumentException("id is null");
+		}
+		id = pID;
 	}
 
-	private ArrayList<Method> findInMethods() {
+	public ArrayList<Method> findInMethods() {
 		final ArrayList<Method> methods = new ArrayList<Method>();
 		for (final Method m : getClass().getMethods()) {
 			final In in = m.getAnnotation(In.class);
 			if (in != null) {
 				final int index = in.value();
 				if (index < 0) {
-					throw new BugException("negative In.value " + index
-							+ " for " + m);
+					throw new BugException("negative In.value " + index + " for " + m);
 				}
 				if (m.getParameterTypes().length != 1) {
-					throw new BugException(
-							"In method shoul require exactly one parameter "
-									+ m);
+					throw new BugException("In method shoul require exactly one parameter " + m);
 				}
 				while (index >= methods.size()) {
 					methods.add(null);
 				}
 				final Method old = methods.get(index);
 				if (null != old) {
-					throw new BugException("duplicate In.value " + index
-							+ " for " + m + " and " + old);
+					throw new BugException("duplicate In.value " + index + " for " + m + " and " + old);
 				}
 				methods.set(index, m);
 			}
@@ -68,27 +68,24 @@ public class AbstractPacket implements Packet {
 		return methods;
 	}
 
-	private ArrayList<Method> findOutMethods() {
+	public ArrayList<Method> findOutMethods() {
 		final ArrayList<Method> methods = new ArrayList<Method>();
 		for (final Method m : getClass().getMethods()) {
 			final Out out = m.getAnnotation(Out.class);
 			if (out != null) {
 				final int index = out.value();
 				if (index < 0) {
-					throw new BugException("negative Out.value " + index
-							+ " for " + m);
+					throw new BugException("negative Out.value " + index + " for " + m);
 				}
 				if (m.getParameterTypes().length != 0) {
-					throw new BugException(
-							"Out method shouln'd require parameters " + m);
+					throw new BugException("Out method shouln'd require parameters " + m);
 				}
 				while (index >= methods.size()) {
 					methods.add(null);
 				}
 				final Method old = methods.get(index);
 				if (null != old) {
-					throw new BugException("duplicate Out.value " + index
-							+ " for " + m + " and " + old);
+					throw new BugException("duplicate Out.value " + index + " for " + m + " and " + old);
 				}
 				methods.set(index, m);
 			}
@@ -96,9 +93,13 @@ public class AbstractPacket implements Packet {
 		return methods;
 	}
 
+	public final PacketID getId() {
+		return id;
+	}
+
 	@Override
 	public final byte getPacketID() {
-		return id;
+		return id.getId();
 	}
 
 	@Override

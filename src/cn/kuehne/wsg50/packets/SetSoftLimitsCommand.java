@@ -23,54 +23,39 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+package cn.kuehne.wsg50.packets;
 
-package cn.kuehne.wsg50.helper;
+import cn.kuehne.wsg50.PacketID;
+import cn.kuehne.wsg50.helper.AbstractCommand;
+import cn.kuehne.wsg50.helper.In;
+import cn.kuehne.wsg50.helper.Out;
 
-import cn.kuehne.wsg50.BugException;
-import cn.kuehne.wsg50.Packet;
-import cn.kuehne.wsg50.PayloadHandler;
+public class SetSoftLimitsCommand extends AbstractCommand {
 
-public class PayloadHandlerDebug implements PayloadHandler {
-	private Class<? extends Packet> implementation;
-	private Packet lastPacket;
+	private float Limit_Minus, Limit_Plus;
 
-	public PayloadHandlerDebug(Class<? extends Packet> imp) {
-		setImplementation(imp);
+	public SetSoftLimitsCommand() {
+		super(PacketID.SetSoftLimits);
 	}
 
-	public Class<? extends Packet> getImplementation() {
-		return implementation;
+	@Out(0)
+	public float getSoftLimitMinus() {
+		return Limit_Minus;
 	}
 
-	public Packet getLastPacket() {
-		return lastPacket;
+	@Out(1)
+	public float getSoftLimitPlus() {
+		return Limit_Plus;
 	}
 
-	@Override
-	public void handlePayload(final byte rawId, final byte[] payload, final boolean validCRC) {
-		try {
-			lastPacket = implementation.newInstance();
-		} catch (Exception e) {
-			throw new BugException(e);
-		}
-		final byte expectedID = lastPacket.getPacketID();
-
-		if (rawId != expectedID) {
-			throw new BugException(" packet id 0x" + Integer.toHexString(0xFF & rawId)
-					+ " doesn't match implementation id 0x" + Integer.toHexString(0xFF & expectedID));
-		}
-
-		if (!validCRC) {
-			throw new IllegalArgumentException("crc isn't valid");
-		}
-
-		lastPacket.setPayload(payload);
+	@In(0)
+	public void setSoftLimitMinus(float f) {
+		Limit_Minus = f;
 	}
 
-	public void setImplementation(Class<? extends Packet> imp) {
-		if (imp == null) {
-			throw new IllegalArgumentException("implementation class is null");
-		}
-		implementation = imp;
+	@In(1)
+	public void setSoftLimitPlus(float f) {
+		Limit_Minus = f;
 	}
+
 }

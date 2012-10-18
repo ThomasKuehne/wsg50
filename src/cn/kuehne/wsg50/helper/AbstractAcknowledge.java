@@ -27,12 +27,13 @@ package cn.kuehne.wsg50.helper;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.E;
+import cn.kuehne.wsg50.PacketID;
 
 public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 	private short statusCode;
 
-	protected AbstractAcknowledge(byte pId) {
-		super(pId);
+	protected AbstractAcknowledge(PacketID pID) {
+		super(pID);
 	}
 
 	@Override
@@ -69,5 +70,11 @@ public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 	@Override
 	public void setStatusCode(short status) {
 		statusCode = status;
+	}
+
+	@Override
+	public final String toString() {
+		// yes, calling super is intended (see "final") TODO
+		return super.toString();
 	}
 }

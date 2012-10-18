@@ -30,6 +30,6 @@ import cn.kuehne.wsg50.helper.AbstractCommand;
 
 public class DisconnectAnnouncementCommand extends AbstractCommand {
 	public DisconnectAnnouncementCommand() {
-		super(DisconnectAnnouncement.getId());
+		super(DisconnectAnnouncement);
 	}
 }

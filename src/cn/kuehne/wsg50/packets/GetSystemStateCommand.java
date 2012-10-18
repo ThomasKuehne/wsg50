@@ -37,7 +37,7 @@ public class GetSystemStateCommand extends AbstractCommand {
 	private short period;
 
 	public GetSystemStateCommand() {
-		super(PacketID.GetSystemState.getId());
+		super(PacketID.GetSystemState);
 	}
 
 	@Out(0)
@@ -58,12 +58,5 @@ public class GetSystemStateCommand extends AbstractCommand {
 	@In(1)
 	public void setPeriod(short newPeriod) {
 		period = newPeriod;
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetSystemState + " flags:"
-				+ Integer.toBinaryString(0xFF & getFlags()) + " period:"
-				+ getPeriod();
 	}
 }

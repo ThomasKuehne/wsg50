@@ -60,8 +60,7 @@ public class IOHelperTest {
 		o.append(b);
 
 		final byte[] result = o.getBytes();
-		assertArrayEquals(new byte[] { 0x00, 0x00, 0x16, 0x43, 0x00, 0x00,
-				0x16, (byte) 0xc3 }, result);
+		assertArrayEquals(new byte[] { 0x00, 0x00, 0x16, 0x43, 0x00, 0x00, 0x16, (byte) 0xc3 }, result);
 
 		final InputArray i = new InputArray(result);
 		assertTrue(a == i.readFloat());
@@ -91,8 +90,7 @@ public class IOHelperTest {
 		o.append(b);
 
 		final byte[] result = o.getBytes();
-		assertArrayEquals(new byte[] { 0x04, 0x03, 0x02, 0x01, 0x08, 0x07,
-				0x06, 0x05 }, result);
+		assertArrayEquals(new byte[] { 0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05 }, result);
 
 		final InputArray i = new InputArray(result);
 		assertEquals(a, i.readInt());

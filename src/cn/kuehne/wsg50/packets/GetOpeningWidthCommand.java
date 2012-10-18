@@ -37,7 +37,7 @@ public class GetOpeningWidthCommand extends AbstractCommand {
 	private short period;
 
 	public GetOpeningWidthCommand() {
-		super(PacketID.GetOpeningWidth.getId());
+		super(PacketID.GetOpeningWidth);
 	}
 
 	@Out(0)
@@ -51,19 +51,12 @@ public class GetOpeningWidthCommand extends AbstractCommand {
 	}
 
 	@In(0)
-	public void setFlags(byte newFlags) {
+	public void setFlags(final byte newFlags) {
 		flags = newFlags;
 	}
 
 	@In(1)
-	public void setPeriod(short newPeriod) {
+	public void setPeriod(final short newPeriod) {
 		period = newPeriod;
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetOpeningWidth + " flags:"
-				+ Integer.toBinaryString(0xFF & getFlags()) + " period:"
-				+ getPeriod();
 	}
 }

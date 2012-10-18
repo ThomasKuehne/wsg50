@@ -100,9 +100,8 @@ public class OutputHelper implements Output {
 			final char c = cs.charAt(index);
 			final byte b = (byte) (0xFF & c);
 			if ((0xFFFF & c) != (0xFF & b)) {
-				throw new IllegalArgumentException("illegal character \"" + c
-						+ "\" (" + Integer.toHexString(0xFFFF & c)
-						+ ") at position " + index);
+				throw new IllegalArgumentException("illegal character \"" + c + "\" ("
+						+ Integer.toHexString(0xFFFF & c) + ") at position " + index);
 			}
 
 			appendByte((byte) (0xFF & b));

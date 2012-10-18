@@ -54,8 +54,7 @@ public class LoopCommandTests {
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final LoopCommand result = wsg50.readDebug(input, LoopCommand.class,
-				true);
+		final LoopCommand result = wsg50.readDebug(input, LoopCommand.class, true);
 
 		assertArrayEquals(data, result.getLoopData());
 	}

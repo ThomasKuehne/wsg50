@@ -48,8 +48,7 @@ public class DisconnectAnnouncementCommandTests {
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final DisconnectAnnouncementCommand result = wsg50.readDebug(input,
-				DisconnectAnnouncementCommand.class, true);
+		final DisconnectAnnouncementCommand result = wsg50.readDebug(input, DisconnectAnnouncementCommand.class, true);
 
 		assertNotNull(result);
 	}

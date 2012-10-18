@@ -36,7 +36,7 @@ public class GetSystemStateAcknowledge extends AbstractAcknowledge {
 	private int flags; // TODO
 
 	public GetSystemStateAcknowledge() {
-		super(PacketID.GetSystemState.getId());
+		super(PacketID.GetSystemState);
 	}
 
 	@Out(0)
@@ -47,11 +47,5 @@ public class GetSystemStateAcknowledge extends AbstractAcknowledge {
 	@In(0)
 	public void setFlags(int newFlags) {
 		flags = newFlags;
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetSystemState + " flags:"
-				+ Integer.toBinaryString(getFlags());
 	}
 }

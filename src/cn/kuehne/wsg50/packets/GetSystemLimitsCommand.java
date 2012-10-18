@@ -31,11 +31,6 @@ import cn.kuehne.wsg50.helper.AbstractCommand;
 
 public class GetSystemLimitsCommand extends AbstractCommand {
 	public GetSystemLimitsCommand() {
-		super(PacketID.GetSystemLimits.getId());
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetSystemLimits.name();
+		super(PacketID.GetSystemLimits);
 	}
 }

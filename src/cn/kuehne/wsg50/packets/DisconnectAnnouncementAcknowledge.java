@@ -30,6 +30,6 @@ import cn.kuehne.wsg50.helper.AbstractAcknowledge;
 
 public class DisconnectAnnouncementAcknowledge extends AbstractAcknowledge {
 	public DisconnectAnnouncementAcknowledge() {
-		super(DisconnectAnnouncement.getId());
+		super(DisconnectAnnouncement);
 	}
 }

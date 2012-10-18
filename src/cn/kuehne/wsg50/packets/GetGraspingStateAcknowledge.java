@@ -33,11 +33,24 @@ import cn.kuehne.wsg50.helper.Out;
 
 public class GetGraspingStateAcknowledge extends AbstractAcknowledge {
 	public static enum GraspingState {
-		Error((byte) 7), Grasping((byte) 1), Holding((byte) 4), Idle((byte) 0), NoPartFound((byte) 2), PartLost(
-						(byte) 3), Positioning(
-				(byte) 6), Releasing((byte) 5);
+		/** */
+		Error((byte) 7),
+		/** */
+		Grasping((byte) 1),
+		/** */
+		Holding((byte) 4),
+		/** */
+		Idle((byte) 0),
+		/** */
+		NoPartFound((byte) 2),
+		/** */
+		PartLost((byte) 3),
+		/** */
+		Positioning((byte) 6),
+		/** */
+		Releasing((byte) 5);
 
-		public static GraspingState lookup(byte code) {
+		public static GraspingState lookup(final byte code) {
 			for (final GraspingState s : values()) {
 				if (s.getCode() == code) {
 					return s;
@@ -48,7 +61,7 @@ public class GetGraspingStateAcknowledge extends AbstractAcknowledge {
 
 		private final byte code;
 
-		private GraspingState(byte c) {
+		private GraspingState(final byte c) {
 			code = c;
 		}
 
@@ -60,7 +73,7 @@ public class GetGraspingStateAcknowledge extends AbstractAcknowledge {
 	private GraspingState state;
 
 	public GetGraspingStateAcknowledge() {
-		super(PacketID.GetGraspingState.getId());
+		super(PacketID.GetGraspingState);
 		setState(GraspingState.Idle);
 	}
 
@@ -73,7 +86,7 @@ public class GetGraspingStateAcknowledge extends AbstractAcknowledge {
 		return state.getCode();
 	}
 
-	public void setState(GraspingState newState) {
+	public void setState(final GraspingState newState) {
 		if (newState == null) {
 			throw new IllegalArgumentException("new state is null");
 		}
@@ -81,12 +94,7 @@ public class GetGraspingStateAcknowledge extends AbstractAcknowledge {
 	}
 
 	@In(0)
-	public void setStateRaw(byte newState) {
-		setState(GraspingState.lookup(newState));
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetGraspingState + " state:" + getState();
+	public void setStateRaw(final byte newStateCode) {
+		setState(GraspingState.lookup(newStateCode));
 	}
 }

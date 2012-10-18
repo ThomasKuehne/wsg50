@@ -57,8 +57,7 @@ public class PrePositionFingersCommandTests {
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final PrePositionFingersCommand result = wsg50.readDebug(input,
-				PrePositionFingersCommand.class, true);
+		final PrePositionFingersCommand result = wsg50.readDebug(input, PrePositionFingersCommand.class, true);
 
 		assertEquals(speed, result.getSpeed(), 0);
 		assertEquals(width, result.getWidth(), 0);

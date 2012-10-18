@@ -49,8 +49,7 @@ public class HomingAcknowledgeTests {
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final HomingAcknowledge result = wsg50.readDebug(input,
-				HomingAcknowledge.class, true);
+		final HomingAcknowledge result = wsg50.readDebug(input, HomingAcknowledge.class, true);
 
 		assertNotNull(result);
 	}

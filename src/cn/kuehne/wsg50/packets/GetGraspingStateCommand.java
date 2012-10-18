@@ -37,7 +37,7 @@ public class GetGraspingStateCommand extends AbstractCommand {
 	private short period;
 
 	public GetGraspingStateCommand() {
-		super(PacketID.GetGraspingState.getId());
+		super(PacketID.GetGraspingState);
 	}
 
 	@Out(0)
@@ -51,19 +51,12 @@ public class GetGraspingStateCommand extends AbstractCommand {
 	}
 
 	@In(0)
-	public void setFlags(byte newFlags) {
+	public void setFlags(final byte newFlags) {
 		flags = newFlags;
 	}
 
 	@In(1)
 	public void setPeriod(short newPeriod) {
 		period = newPeriod;
-	}
-
-	@Override
-	public String toString() {
-		return PacketID.GetGraspingState + " flags:"
-				+ Integer.toBinaryString(0xFF & getFlags()) + " period:"
-				+ getPeriod();
 	}
 }

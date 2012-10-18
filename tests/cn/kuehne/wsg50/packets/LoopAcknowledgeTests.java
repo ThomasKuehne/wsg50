@@ -53,8 +53,7 @@ public class LoopAcknowledgeTests {
 		wsg50.write(output, c);
 
 		final InputArray input = new InputArray(output.getBytes());
-		final LoopAcknowledge result = wsg50.readDebug(input,
-				LoopAcknowledge.class, true);
+		final LoopAcknowledge result = wsg50.readDebug(input, LoopAcknowledge.class, true);
 
 		assertArrayEquals(data, result.getLoopData());
 	}

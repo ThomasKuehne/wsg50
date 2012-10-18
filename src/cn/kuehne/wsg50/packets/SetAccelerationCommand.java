@@ -35,7 +35,7 @@ public class SetAccelerationCommand extends AbstractCommand {
 	private float acc;
 
 	public SetAccelerationCommand() {
-		super(PacketID.SetAcceleration.getId());
+		super(PacketID.SetAcceleration);
 	}
 
 	@Out(0)
