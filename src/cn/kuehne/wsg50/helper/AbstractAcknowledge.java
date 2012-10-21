@@ -64,11 +64,22 @@ public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 	}
 
 	@Override
-	public final String toString() {
-		// yes, calling super is intended (see "final") TODO
-		return super.toString();
+	void toStringValues(final StringBuilder builder){
+		final short status = getStatusCode();
+		builder.append(' ');
+		builder.append("Status:");
+		E e = E.lookup(status);
+		if(e == null){
+			builder.append(status);
+		}else{
+			builder.append(e);
+		}
+		
+		if (E.SUCCESS.getCode() == status) {
+			super.toStringValues(builder);
+		}
 	}
-
+	
 	@Override
 	public void writePayload(PacketBuilder builder) {
 		builder.appendShort(getStatusCode());

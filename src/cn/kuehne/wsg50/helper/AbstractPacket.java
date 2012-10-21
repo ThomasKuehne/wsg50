@@ -29,7 +29,9 @@ package cn.kuehne.wsg50.helper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.BugException;
+import cn.kuehne.wsg50.Command;
 import cn.kuehne.wsg50.Packet;
 import cn.kuehne.wsg50.PacketBuilder;
 import cn.kuehne.wsg50.PacketID;
@@ -141,5 +143,33 @@ public class AbstractPacket implements Packet {
 			}
 			builder.append(value);
 		}
+	}
+	
+	void toStringValues(StringBuilder builder){
+		for (final Method method : findOutMethods()) {
+			builder.append(' ');
+			builder.append(method.getName().substring(3));
+			builder.append(':');
+			try {
+				builder.append(method.invoke(this));
+			} catch (Exception e) {
+				builder.append("BUG");
+			}
+		}		
+	}
+	
+	@Override
+	public final String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append(getId());
+		if (this instanceof Command) {
+			builder.append("Command");
+		}
+		if (this instanceof Acknowledge) {
+			builder.append("Acknowledge");
+		}
+		toStringValues(builder);
+
+		return builder.toString();
 	}
 }

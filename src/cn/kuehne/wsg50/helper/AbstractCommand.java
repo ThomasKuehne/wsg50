@@ -32,10 +32,4 @@ public class AbstractCommand extends AbstractPacket implements Command {
 	protected AbstractCommand(PacketID pID) {
 		super(pID);
 	}
-
-	@Override
-	public final String toString() {
-		// yes, calling super is intended (see "final")
-		return super.toString();
-	}
 }

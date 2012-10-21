@@ -26,16 +26,18 @@
 
 package cn.kuehne.wsg50;
 
-public enum E {
-	ACCESS_DENIED((byte) 16), ALREADY_OPEN((byte) 17), ALREADY_RUNNING((byte) 4), AXIS_BLOCKED((byte) 29), CHECKSUM_ERROR(
-			(byte) 11), CMD_ABORTED((byte) 19), CMD_FAILED((byte) 18), CMD_FORMAT_ERROR((byte) 15), CMD_PENDING(
-			(byte) 26), CMD_UNKNOWN((byte) 14), FEATURNOT_SUPPORTED((byte) 5), FILEXISTS((byte) 30), INCONSISTENT_DATA(
-			(byte) 6), INDEX_OUT_OF_BOUNDS((byte) 25), INSUFFICIENT_RESOURCES((byte) 10), INVALID_HANDLE((byte) 20), INVALID_PARAMETER(
-			(byte) 24), IO_ERROR((byte) 23), NO_PARAM_EXPECTED((byte) 12), NO_SENSOR((byte) 2), NOT_AVAILABLE((byte) 1), NOT_ENOUGH_PARAMS(
-			(byte) 13), NOT_FOUND((byte) 21), NOT_INITIALIZED((byte) 3), NOT_OPEN((byte) 22), OVERRUN((byte) 27), RANGERROR(
-			(byte) 28), READ_ERROR((byte) 8), SUCCESS((byte) 0), TIMEOUT((byte) 7), WRITERROR((byte) 9);
+import java.io.Serializable;
 
-	public static E lookup(byte id) {
+public enum E implements Serializable {
+	ACCESS_DENIED((short) 16), ALREADY_OPEN((short) 17), ALREADY_RUNNING((short) 4), AXIS_BLOCKED((short) 29), CHECKSUM_ERROR(
+			(short) 11), CMD_ABORTED((short) 19), CMD_FAILED((short) 18), CMD_FORMAT_ERROR((short) 15), CMD_PENDING(
+			(short) 26), CMD_UNKNOWN((short) 14), FEATURNOT_SUPPORTED((short) 5), FILEXISTS((short) 30), INCONSISTENT_DATA(
+			(short) 6), INDEX_OUT_OF_BOUNDS((short) 25), INSUFFICIENT_RESOURCES((short) 10), INVALID_HANDLE((short) 20), INVALID_PARAMETER(
+			(short) 24), IO_ERROR((short) 23), NO_PARAM_EXPECTED((short) 12), NO_SENSOR((short) 2), NOT_AVAILABLE((short) 1), NOT_ENOUGH_PARAMS(
+			(short) 13), NOT_FOUND((short) 21), NOT_INITIALIZED((short) 3), NOT_OPEN((short) 22), OVERRUN((short) 27), RANGERROR(
+			(short) 28), READ_ERROR((short) 8), SUCCESS((short) 0), TIMEOUT((short) 7), WRITERROR((short) 9);
+
+	public static E lookup(short id) {
 		for (final E e : values()) {
 			if (e.getCode() == id) {
 				return e;
@@ -44,13 +46,13 @@ public enum E {
 		return null;
 	}
 
-	private final byte code;
+	private final short code;
 
-	private E(byte c) {
+	private E(short c) {
 		code = c;
 	}
 
-	public byte getCode() {
+	public short getCode() {
 		return code;
 	}
 }
