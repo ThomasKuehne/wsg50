@@ -27,5 +27,5 @@
 package cn.kuehne.wsg50;
 
 public interface Output {
-	public void writeByte(byte b);
+	public void writePacket(byte[] b);
 }

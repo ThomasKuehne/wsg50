@@ -29,7 +29,7 @@ package cn.kuehne.wsg50;
 public interface Packet {
 	byte getPacketID();
 
-	byte[] getPayload();
-
 	void setPayload(byte[] p);
+
+	void writePayload(PacketBuilder builder);
 }

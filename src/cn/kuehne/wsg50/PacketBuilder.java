@@ -23,34 +23,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+package cn.kuehne.wsg50;
 
-package cn.kuehne.wsg50.packets;
+public interface PacketBuilder {
+	public void append(Object object);
 
-import static org.junit.Assert.assertNotNull;
+	public void appendByte(byte value);
 
-import org.junit.Test;
+	public void appendBytes(byte[] values);
 
-import cn.kuehne.wsg50.Packet;
-import cn.kuehne.wsg50.PacketCoder;
-import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.helper.InputArray;
-import cn.kuehne.wsg50.helper.OutputArray;
+	public void appendFloat(float f);
 
-public class HomingAcknowledgeTests {
+	public void appendInt(int value);
 
-	@Test
-	public void testRoundtrip() {
-		final Packet c = PacketID.Homing.getAcknowledge();
-		assertNotNull(c);
+	public void appendShort(short value);
 
-		final PacketCoder wsg50 = new PacketCoder();
+	public void appendText(CharSequence text);
 
-		final OutputArray output = new OutputArray();
-		wsg50.write(output, c);
-
-		final InputArray input = new InputArray(output.getBytes());
-		final HomingAcknowledge result = wsg50.readDebug(input, HomingAcknowledge.class, true);
-
-		assertNotNull(result);
-	}
 }

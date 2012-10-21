@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 import cn.kuehne.wsg50.BugException;
 import cn.kuehne.wsg50.Packet;
+import cn.kuehne.wsg50.PacketBuilder;
 import cn.kuehne.wsg50.PacketID;
 
 public class AbstractPacket implements Packet {
@@ -103,27 +104,6 @@ public class AbstractPacket implements Packet {
 	}
 
 	@Override
-	public byte[] getPayload() {
-		final OutputArray out = new OutputArray();
-		getPayload(out);
-		return out.getBytes();
-	}
-
-	public void getPayload(final OutputHelper out) {
-		final ArrayList<Method> methods = findOutMethods();
-
-		for (Method m : methods) {
-			final Object value;
-			try {
-				value = m.invoke(this);
-			} catch (Exception e) {
-				throw new BugException("" + m, e);
-			}
-			out.append(value);
-		}
-	}
-
-	@Override
 	public void setPayload(final byte[] payload) {
 		if (payload.length == 0) {
 			return;
@@ -146,5 +126,20 @@ public class AbstractPacket implements Packet {
 		}
 
 		// TODO check end of INPUT
+	}
+
+	@Override
+	public void writePayload(final PacketBuilder builder) {
+		final ArrayList<Method> methods = findOutMethods();
+
+		for (Method m : methods) {
+			final Object value;
+			try {
+				value = m.invoke(this);
+			} catch (Exception e) {
+				throw new BugException("" + m, e);
+			}
+			builder.append(value);
+		}
 	}
 }

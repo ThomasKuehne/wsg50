@@ -26,7 +26,7 @@
 package cn.kuehne.wsg50;
 
 import cn.kuehne.wsg50.helper.InputHelper;
-import cn.kuehne.wsg50.helper.OutputHelper;
+import cn.kuehne.wsg50.helper.PacketBuilderImpl;
 import cn.kuehne.wsg50.helper.PayloadHandlerAcknowledge;
 import cn.kuehne.wsg50.helper.PayloadHandlerCommand;
 import cn.kuehne.wsg50.helper.PayloadHandlerDebug;
@@ -94,29 +94,10 @@ public class PacketCoder {
 		}
 
 		final byte id = packet.getPacketID();
-		final byte[] payload = packet.getPayload();
-		if (payload != null && payload.length > 0xFFFF) {
-			throw new IllegalArgumentException("excessive payload length: " + payload.length);
-		}
+		final PacketBuilderImpl builder = new PacketBuilderImpl(id);
+		packet.writePayload(builder);
 
-		final OutputHelper out = new OutputHelper(output);
-
-		// praeamble
-		out.appendByte((byte) 0xAA);
-		out.appendByte((byte) 0xAA);
-		out.appendByte((byte) 0xAA);
-
-		// id
-		out.writeByte(id);
-
-		// payload
-		if (payload == null) {
-			out.appendShort((short) 0);
-		} else {
-			out.appendShort((short) payload.length);
-			out.appendBytes(payload);
-		}
-
-		out.appendShort(out.getCRC());
+		byte[] encoded = builder.getEncoded();
+		output.writePacket(encoded);
 	}
 }

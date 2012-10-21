@@ -33,6 +33,7 @@ import java.net.Socket;
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.Command;
 import cn.kuehne.wsg50.E;
+import cn.kuehne.wsg50.PacketBuilder;
 import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.PayloadHandler;
@@ -60,11 +61,6 @@ public class Mirror implements PayloadHandler, Runnable {
 		}
 
 		@Override
-		public byte[] getPayload() {
-			return new byte[] { (byte) (code & 0xFF), (byte) ((code >> 8) & 0xFF) };
-		}
-
-		@Override
 		public short getStatusCode() {
 			return code;
 		}
@@ -82,6 +78,10 @@ public class Mirror implements PayloadHandler, Runnable {
 		@Override
 		public String toString() {
 			return "! " + getClass().getSimpleName();
+		}
+
+		public void writePayload(PacketBuilder builder) {
+			builder.appendShort(getStatusCode());
 		}
 	}
 

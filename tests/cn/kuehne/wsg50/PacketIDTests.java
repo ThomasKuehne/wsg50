@@ -26,7 +26,10 @@
 
 package cn.kuehne.wsg50;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -34,6 +37,7 @@ import java.util.List;
 import org.junit.Test;
 
 import cn.kuehne.wsg50.helper.AbstractPacket;
+import cn.kuehne.wsg50.helper.PacketBuilderImpl;
 
 public class PacketIDTests {
 	private void checkAbstractPacket(AbstractPacket packet, String label) {
@@ -68,7 +72,10 @@ public class PacketIDTests {
 			if (acknowledge instanceof AbstractPacket) {
 				checkAbstractPacket((AbstractPacket) acknowledge, label);
 			}
-			byte[] payload = acknowledge.getPayload();
+
+			final PacketBuilderImpl builder = new PacketBuilderImpl(id.getId());
+			acknowledge.writePayload(builder);
+			byte[] payload = builder.getPayload();
 			assertNotNull(label + " get", payload);
 			acknowledge.setPayload(payload);
 		} catch (Exception e) {
@@ -90,7 +97,9 @@ public class PacketIDTests {
 			if (command instanceof AbstractPacket) {
 				checkAbstractPacket((AbstractPacket) command, label);
 			}
-			byte[] payload = command.getPayload();
+			final PacketBuilderImpl builder = new PacketBuilderImpl(id.getId());
+			command.writePayload(builder);
+			byte[] payload = builder.getPayload();
 			assertNotNull(label + " get", payload);
 			command.setPayload(payload);
 		} catch (Exception e) {

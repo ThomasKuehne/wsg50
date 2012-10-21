@@ -27,6 +27,7 @@ package cn.kuehne.wsg50.helper;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.E;
+import cn.kuehne.wsg50.PacketBuilder;
 import cn.kuehne.wsg50.PacketID;
 
 public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
@@ -34,16 +35,6 @@ public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 
 	protected AbstractAcknowledge(PacketID pID) {
 		super(pID);
-	}
-
-	@Override
-	public byte[] getPayload() {
-		final OutputArray out = new OutputArray();
-		out.appendShort(getStatusCode());
-		if (E.SUCCESS.getCode() == getStatusCode()) {
-			super.getPayload(out);
-		}
-		return out.getBytes();
 	}
 
 	@Override
@@ -76,5 +67,13 @@ public class AbstractAcknowledge extends AbstractPacket implements Acknowledge {
 	public final String toString() {
 		// yes, calling super is intended (see "final") TODO
 		return super.toString();
+	}
+
+	@Override
+	public void writePayload(PacketBuilder builder) {
+		builder.appendShort(getStatusCode());
+		if (E.SUCCESS.getCode() == getStatusCode()) {
+			super.writePayload(builder);
+		}
 	}
 }

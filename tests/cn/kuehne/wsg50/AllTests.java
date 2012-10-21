@@ -30,11 +30,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import cn.kuehne.wsg50.helper.CRC16Tests;
-import cn.kuehne.wsg50.helper.IOHelperTest;
-import cn.kuehne.wsg50.packets.AllPacketTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PacketIDTests.class, PacketTests.class, CRC16Tests.class, IOHelperTest.class, AllPacketTests.class })
+@SuiteClasses({ PacketIDTests.class, PacketTests.class, CRC16Tests.class })
 public class AllTests {
 
 }

@@ -50,7 +50,7 @@ public class OutputToStream implements Output, Closeable {
 	}
 
 	@Override
-	public void writeByte(byte b) {
+	public void writePacket(byte[] b) {
 		try {
 			dest.write(b);
 		} catch (IOException e) {
