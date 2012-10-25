@@ -24,10 +24,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cn.kuehne.wsg50;
+package cn.kuehne.wsg50.io;
 
-import java.io.EOFException;
+import java.io.ByteArrayOutputStream;
 
-public interface Input {
-	public void readBytes(byte[] buffer, int start, int length) throws EOFException;
+import cn.kuehne.wsg50.BugException;
+import cn.kuehne.wsg50.Output;
+
+public class ArrayOutput implements Output {
+	private final ByteArrayOutputStream buffer;
+	
+	public ArrayOutput(){
+		buffer = new ByteArrayOutputStream();
+	}
+
+	@Override
+	public void writePacket(byte[] packet) {
+		if(packet == null){
+			throw new IllegalArgumentException("packet is null");
+		}
+		try {
+			buffer.write(packet);
+		} catch (Exception e) {
+			throw new BugException("this should never happen", e);
+		}
+	}
+
+	public void write(byte b) {
+		try {
+			buffer.write(b);
+		} catch (Exception e) {
+			throw new BugException("this should never happen", e);
+		}
+	}
+	
+	public byte[] toByteArray(){
+		return buffer.toByteArray();
+	}
+	
+	public int size(){
+		return buffer.size();
+	}
 }
