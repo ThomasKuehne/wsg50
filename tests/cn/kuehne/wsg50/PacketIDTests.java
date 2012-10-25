@@ -48,18 +48,18 @@ public class PacketIDTests {
 		for (int methodIndex = 0; methodIndex < inMethods.size(); methodIndex++) {
 			final Method in = inMethods.get(methodIndex);
 			assertNotNull(label + " in[" + methodIndex + "]", in);
-			assertTrue(label + " in[" + methodIndex + "]in", in.getName().startsWith("set"));
+			assertTrue(label + " in[" + in.getName() + "]in", in.getName().startsWith("set"));
 			
 			final Method out = outMethods.get(methodIndex);
 			assertNotNull(label + " out[" + methodIndex + "]", out);
-			assertTrue(label + " out[" + methodIndex + "]get", out.getName().startsWith("get"));
+			assertTrue(label + " out[" + out.getName() + "]get", out.getName().startsWith("get"));
 
 			final Class<?>[] params = in.getParameterTypes();
-			assertEquals(label + " out[" + methodIndex + "]num", 1, params.length);
+			assertEquals(label + " out[" + out.getName() + "]num", 1, params.length);
 
-			assertEquals(label + " type[" + methodIndex + "]", out.getReturnType(), params[0]);
+			assertEquals(label + " type[" + out.getName() + "]", out.getReturnType(), params[0]);
 			
-			assertEquals(label + " type[" + methodIndex + "]name", in.getName().substring(3), out.getName().substring(3)); 
+			assertEquals(label + " type[" + out.getName() + "]name", in.getName().substring(3), out.getName().substring(3)); 
 		}
 		
 		assertNotNull(label + " string", packet.toString());
