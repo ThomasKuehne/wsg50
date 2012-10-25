@@ -37,13 +37,13 @@ public enum PacketID {
 	/** */
 	Homing((byte) 0x20, HomingCommand.class, HomingAcknowledge.class),
 	/** */
-	PrePositionFingers((byte) 0x21, PrePositionFingersCommand.class, null),
+	PrePositionFingers((byte) 0x21, PrePositionFingersCommand.class, PrePositionFingersAcknowledge.class),
 	/** */
 	Stop((byte) 0x22, StopCommand.class, StopAcknowledge.class),
 	/** */
 	FastStop((byte) 0x23, FastStopCommand.class, FastStopAcknowledge.class),
 	/** */
-	AcknowledgeFault((byte) 0x24, null, null),
+	AcknowledgeFault((byte) 0x24, AcknowledgeFaultCommand.class, AcknowledgeFaultAcknowledge.class),
 	/** */
 	GraspPart((byte) 0x25, GraspPartCommand.class, GraspPartAcknowledge.class),
 	/** */
@@ -64,42 +64,42 @@ public enum PacketID {
 	/** */
 	ClearSoftLimits((byte) 0x36, ClearSoftLimitsCommand.class, ClearSoftLimitsAcknowledge.class),
 	/** */
-	OverdriveMode((byte) 0x37, null, null),
+	OverdriveMode((byte) 0x37, OverdriveModeCommand.class, OverdriveModeAcknowledge.class),
 	/** */
-	TareForceSensor((byte) 0x38, null, null),
+	TareForceSensor((byte) 0x38, TareForceSensorCommand.class, TareForceSensorAcknowledge.class),
 
 	/** */
 	GetSystemState((byte) 0x40, GetSystemStateCommand.class, GetSystemStateAcknowledge.class),
 	/** */
 	GetGraspingState((byte) 0x41, GetGraspingStateCommand.class, GetGraspingStateAcknowledge.class),
 	/** */
-	GetGraspingStatistics((byte) 0x42, null, null),
+	GetGraspingStatistics((byte) 0x42, GetGraspingStatisticsCommand.class, GetGraspingStatisticsAcknowledge.class),
 	/** */
 	GetOpeningWidth((byte) 0x43, GetOpeningWidthCommand.class, GetOpeningWidthAcknowledge.class),
 	/** */
-	GetSpeed((byte) 0x44, null, null),
+	GetSpeed((byte) 0x44, GetSpeedCommand.class, GetSpeedAcknowledge.class),
 	/** */
-	GetForce((byte) 0x45, null, null),
+	GetForce((byte) 0x45, GetForceCommand.class, GetForceAcknowledge.class),
 	/** */
-	GetTemperature((byte) 0x46, null, null),
-
+	GetTemperature((byte) 0x46, GetTemperatureCommand.class, GetTemperatureAcknowledge.class),
+	
 	/** */
-	GetSystemInformation((byte) 0x50, null, null),
+	GetSystemInformation((byte) 0x50, GetSystemInformationCommand.class,GetSystemInformationAcknowledge.class),
 	/** */
-	SetDeviceTag((byte) 0x51, null, null),
+	SetDeviceTag((byte) 0x51, SetDeviceTagCommand.class,SetDeviceTagAcknowledge.class),
 	/** */
-	GetDeviceTag((byte) 0x52, null, null),
+	GetDeviceTag((byte) 0x52, GetDeviceTagCommand.class, GetDeviceTagAcknowledge.class),
 	/** */
 	GetSystemLimits((byte) 0x53, GetSystemLimitsCommand.class, GetSystemLimitsAcknowledge.class),
 
 	/** */
-	GetFingerInfo((byte) 0x60, null, null),
+	GetFingerInfo((byte) 0x60, GetFingerInfoCommand.class, GetFingerInfoAcknowledge.class),
 	/** */
-	GetFingerFlags((byte) 0x61, null, null),
+	GetFingerFlags((byte) 0x61, GetFingerFlagsCommand.class, GetFingerFlagsAcknowledge.class),
 	/** */
-	FingerPowerControl((byte) 0x62, null, null),
+	FingerPowerControl((byte) 0x62, FingerPowerControlCommand.class, FingerPowerControlAcknowledge.class),
 	/** */
-	GetFingerData((byte) 0x63, null, null);
+	GetFingerData((byte) 0x63, GetFingerDataCommand.class, GetFingerDataAcknowledge.class);
 
 	public static PacketID lookup(byte id) {
 		for (final PacketID pID : values()) {
