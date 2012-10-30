@@ -26,8 +26,8 @@
 
 package cn.kuehne.wsg50;
 
-import java.io.EOFException;
-
 public interface Input {
-	public void readBytes(byte[] buffer, int start, int length) throws EOFException;
+	public void markPacketStart();
+
+	public byte readByte();
 }
