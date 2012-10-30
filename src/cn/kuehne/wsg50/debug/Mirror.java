@@ -27,8 +27,10 @@
 package cn.kuehne.wsg50.debug;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.Command;
@@ -47,6 +49,13 @@ import cn.kuehne.wsg50.packets.GetSystemLimitsAcknowledge;
 import cn.kuehne.wsg50.packets.GetSystemStateAcknowledge;
 
 public class Mirror implements PayloadHandler, Runnable {
+	
+	final InetAddress host;
+	
+	public Mirror() throws UnknownHostException{
+		host = InetAddress.getByName("127.0.0.1");
+	}
+	
 	private static class FeatureNotSupportedPacket implements Acknowledge {
 		private short code = E.FEATURNOT_SUPPORTED.getCode();
 		private byte id;
@@ -145,13 +154,14 @@ public class Mirror implements PayloadHandler, Runnable {
 
 	@Override
 	public void run() {
+		
 		final PacketCoder pc = new PacketCoder();
 		int startPort = 1000;
 		ServerSocket server = null;
 		Exception lastE = null;
 		for (int port = 0; port < 200; port++) {
 			try {
-				server = new ServerSocket(port + startPort);
+				server = new ServerSocket(port + startPort, 0, host);
 				break;
 			} catch (Exception e) {
 				lastE = e;
