@@ -48,6 +48,7 @@ import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge.GraspingState;
 import cn.kuehne.wsg50.packets.GetOpeningWidthAcknowledge;
 import cn.kuehne.wsg50.packets.GetSystemLimitsAcknowledge;
 import cn.kuehne.wsg50.packets.GetSystemStateAcknowledge;
+import cn.kuehne.wsg50.packets.HomingAcknowledge;
 
 public class Mirror implements PayloadHandler, Runnable {
 	
@@ -137,6 +138,9 @@ public class Mirror implements PayloadHandler, Runnable {
 			return back;
 		} else if (command.getPacketID() == PacketID.GetSystemState.getId()) {
 			final GetSystemStateAcknowledge back = new GetSystemStateAcknowledge();
+			return back;
+		}else if(command.getPacketID() == PacketID.Homing.getId()){
+			final HomingAcknowledge back = new HomingAcknowledge();
 			return back;
 		} else {
 			return new FeatureNotSupportedPacket(id);
