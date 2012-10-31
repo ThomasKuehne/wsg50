@@ -38,6 +38,7 @@ import cn.kuehne.wsg50.E;
 import cn.kuehne.wsg50.PacketBuilder;
 import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
+import cn.kuehne.wsg50.Parameter;
 import cn.kuehne.wsg50.PayloadHandler;
 import cn.kuehne.wsg50.helper.InputFromStream;
 import cn.kuehne.wsg50.helper.OutputToStream;
@@ -89,8 +90,14 @@ public class Mirror implements PayloadHandler, Runnable {
 			return "! " + getClass().getSimpleName();
 		}
 
+		@Override
 		public void writePayload(PacketBuilder builder) {
 			builder.appendShort(getStatusCode());
+		}
+
+		@Override
+		public Parameter[] getParameters() {
+			throw new UnsupportedOperationException();
 		}
 	}
 

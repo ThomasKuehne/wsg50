@@ -45,6 +45,11 @@ public class PacketIDTests {
 		final List<Method> outMethods = packet.findOutMethods();
 
 		assertEquals(label + " inOutSize", inMethods.size(), outMethods.size());
+		
+		final Parameter[] parameters = packet.getParameters();
+		assertNotNull(label + " parameters", parameters);
+		assertEquals(label + " parametersSize", inMethods.size(), parameters.length);
+		
 		for (int methodIndex = 0; methodIndex < inMethods.size(); methodIndex++) {
 			final Method in = inMethods.get(methodIndex);
 			assertNotNull(label + " in[" + methodIndex + "]", in);
@@ -59,7 +64,10 @@ public class PacketIDTests {
 
 			assertEquals(label + " type[" + out.getName() + "]", out.getReturnType(), params[0]);
 			
-			assertEquals(label + " type[" + out.getName() + "]name", in.getName().substring(3), out.getName().substring(3)); 
+			assertEquals(label + " typeP[" + out.getName() + "]", out.getReturnType(), parameters[methodIndex].getType());
+			
+			assertEquals(label + " type[" + out.getName() + "]name", in.getName().substring(3), out.getName().substring(3));
+			assertEquals(label + " typeP[" + out.getName() + "]name", in.getName().substring(3), parameters[methodIndex].getName());
 		}
 		
 		assertNotNull(label + " string", packet.toString());

@@ -71,6 +71,8 @@ public class InputHelper implements Input {
 			return readFloat();
 		} else if (byte[].class.isAssignableFrom(c)) {
 			return readBytes();
+		}else if (String.class.isAssignableFrom(c)){
+			return readString();
 		} else {
 			throw new BugException("not handled: " + c);
 		}
@@ -83,6 +85,14 @@ public class InputHelper implements Input {
 		return b;
 	}
 
+	public String readString() {
+		byte[] bytes = readBytes();
+		char[] chars =  new char[bytes.length];
+		for(int i = 0; i < bytes.length; i++){
+			chars[i] = (char)(0xFF & bytes[i]);
+		}
+		return new String(chars);
+	}
 	public byte[] readBytes() {
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		while (true) {

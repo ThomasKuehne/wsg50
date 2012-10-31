@@ -35,6 +35,7 @@ import cn.kuehne.wsg50.Command;
 import cn.kuehne.wsg50.Packet;
 import cn.kuehne.wsg50.PacketBuilder;
 import cn.kuehne.wsg50.PacketID;
+import cn.kuehne.wsg50.Parameter;
 
 public class AbstractPacket implements Packet {
 	private final PacketID id;
@@ -105,6 +106,25 @@ public class AbstractPacket implements Packet {
 		return id.getId();
 	}
 
+	private ReflectedParameter[] param;
+
+	@Override
+	public Parameter[] getParameters() {
+		if (param == null) {
+			final ArrayList<Method> in = findInMethods();
+			final ArrayList<Method> out = findOutMethods();
+			if(in.size() != out.size()){
+				throw new BugException("@Out:" + out.size() + " != @In:"+in.size());
+			}
+
+			param = new ReflectedParameter[in.size()];
+			for (int i = 0; i < param.length; i++) {
+				param[i] = new ReflectedParameter(in.get(i), this, out.get(i));
+			}
+		}
+		return param.clone();
+	}
+
 	@Override
 	public void setPayload(final byte[] payload) {
 		if (payload.length == 0) {
@@ -131,34 +151,6 @@ public class AbstractPacket implements Packet {
 	}
 
 	@Override
-	public void writePayload(final PacketBuilder builder) {
-		final ArrayList<Method> methods = findOutMethods();
-
-		for (Method m : methods) {
-			final Object value;
-			try {
-				value = m.invoke(this);
-			} catch (Exception e) {
-				throw new BugException("" + m, e);
-			}
-			builder.append(value);
-		}
-	}
-	
-	void toStringValues(StringBuilder builder){
-		for (final Method method : findOutMethods()) {
-			builder.append(' ');
-			builder.append(method.getName().substring(3));
-			builder.append(':');
-			try {
-				builder.append(method.invoke(this));
-			} catch (Exception e) {
-				builder.append("BUG");
-			}
-		}		
-	}
-	
-	@Override
 	public final String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append(getId());
@@ -171,5 +163,33 @@ public class AbstractPacket implements Packet {
 		toStringValues(builder);
 
 		return builder.toString();
+	}
+
+	void toStringValues(StringBuilder builder) {
+		for (final Method method : findOutMethods()) {
+			builder.append(' ');
+			builder.append(method.getName().substring(3));
+			builder.append(':');
+			try {
+				builder.append(method.invoke(this));
+			} catch (Exception e) {
+				builder.append("BUG");
+			}
+		}
+	}
+
+	@Override
+	public void writePayload(final PacketBuilder builder) {
+		final ArrayList<Method> methods = findOutMethods();
+
+		for (Method m : methods) {
+			final Object value;
+			try {
+				value = m.invoke(this);
+			} catch (Exception e) {
+				throw new BugException("" + m, e);
+			}
+			builder.append(value);
+		}
 	}
 }

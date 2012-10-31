@@ -29,7 +29,9 @@ package cn.kuehne.wsg50;
 public interface Packet {
 	byte getPacketID();
 
-	void setPayload(byte[] p);
+	Parameter[] getParameters();
 
+	void setPayload(byte[] p);
+	
 	void writePayload(PacketBuilder builder);
 }
