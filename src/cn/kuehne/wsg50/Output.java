@@ -26,6 +26,8 @@
 
 package cn.kuehne.wsg50;
 
-public interface Output {
+import java.io.Closeable;
+
+public interface Output extends Closeable {
 	public void writePacket(byte[] b);
 }

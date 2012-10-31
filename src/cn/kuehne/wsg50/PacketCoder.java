@@ -38,6 +38,7 @@ public class PacketCoder {
 			throw new IllegalArgumentException("output is null");
 		}
 
+		@SuppressWarnings("resource")
 		final InputHelper in = new InputHelper(input);
 		in.markPacketStart();
 		for (int i = 0; i < 3; i++) {

@@ -26,6 +26,7 @@
 package cn.kuehne.wsg50.helper;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import cn.kuehne.wsg50.BugException;
 import cn.kuehne.wsg50.Input;
@@ -112,5 +113,12 @@ public class InputHelper implements Input {
 		final byte b = readByte();
 
 		return (short) ((0xFF00 & (b << 8)) | (0xFF & a));
+	}
+
+	@Override
+	public void close() throws IOException {
+		try{
+		in.close();
+		}catch(Exception e){}
 	}
 }

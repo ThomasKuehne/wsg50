@@ -26,7 +26,9 @@
 
 package cn.kuehne.wsg50;
 
-public interface Input {
+import java.io.Closeable;
+
+public interface Input extends Closeable{
 	public void markPacketStart();
 
 	public byte readByte();
