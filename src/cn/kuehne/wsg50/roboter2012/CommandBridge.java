@@ -80,7 +80,7 @@ public class CommandBridge implements Command {
 
 	public final boolean isError() {
 		if (replies != null && 0 < replies.size()) {
-			final Acknowledge last = replies.get(replies.size());
+			final Acknowledge last = replies.get(replies.size()-1);
 			final short status = last.getStatusCode();
 			return !(E.SUCCESS.getCode() == status || E.CMD_PENDING.getCode() == status);
 		}
@@ -89,7 +89,7 @@ public class CommandBridge implements Command {
 
 	public boolean isFinished() {
 		if (replies != null && 0 < replies.size()) {
-			final Acknowledge last = replies.get(replies.size());
+			final Acknowledge last = replies.get(replies.size()-1);
 			final short status = last.getStatusCode();
 			return E.SUCCESS.getCode() == status;
 		}
