@@ -25,6 +25,7 @@
  */
 package cn.kuehne.wsg50.roboter2012;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.kuehne.wsg50.Acknowledge;
@@ -88,6 +89,10 @@ public class CommandBridge implements Command {
 
 	public final boolean isTouched() {
 		return command != null;
+	}
+
+	void outgoing() {
+		replies = new ArrayList<Acknowledge>();
 	}
 
 	public final void setCommand(final Command newCommand) {

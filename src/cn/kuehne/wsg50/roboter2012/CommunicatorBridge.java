@@ -32,10 +32,13 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.BugException;
-import cn.kuehne.wsg50.Command;
+import cn.kuehne.wsg50.E;
 import cn.kuehne.wsg50.Input;
 import cn.kuehne.wsg50.Output;
 import cn.kuehne.wsg50.PacketCoder;
@@ -44,6 +47,7 @@ import cn.kuehne.wsg50.helper.OutputToStream;
 
 public class CommunicatorBridge implements Closeable {
 	private final PacketCoder coder;
+	private final List<CommandBridge> inFlight; 
 
 	private URI uri;
 	private Input input;
@@ -51,6 +55,7 @@ public class CommunicatorBridge implements Closeable {
 
 	public CommunicatorBridge() {
 		coder = new PacketCoder();
+		inFlight = new LinkedList<CommandBridge>();
 		try {
 			setURI("tcp://wsg50-00419251:1000");
 		} catch (Exception e) {
@@ -145,6 +150,10 @@ public class CommunicatorBridge implements Closeable {
 		} catch (Exception e) {
 		}
 		input = null;
+		
+		try{
+			inFlight.clear();
+		}catch(Exception e){}
 	}
 
 	public final boolean isConnected() {
@@ -155,20 +164,42 @@ public class CommunicatorBridge implements Closeable {
 		if (input == null) {
 			throw new IllegalStateException("'input' is null");
 		}
+		
+		final Acknowledge ack;
 		synchronized (input) {
-			return coder.readAcknowledge(input, true);
+			ack =  coder.readAcknowledge(input, true);
 		}
+		
+		synchronized(inFlight){
+			Iterator<CommandBridge> i = inFlight.iterator();
+			while(i.hasNext()){
+				CommandBridge cmd = i.next();
+				if(ack.getPacketID() == cmd.getPacketID()){
+					cmd.getReplies().add(ack);
+					if(ack.getStatusCode() != E.CMD_PENDING.getCode()){
+						i.remove();
+						break;
+					}
+				}
+			}
+		}
+		return ack;
 	}
 
-	public final void sendCommand(final Command command) {
+	public final void sendCommand(final CommandBridge command) {
 		if (command == null) {
 			throw new IllegalArgumentException("'command' is null");
 		}
 		if (output == null) {
 			throw new IllegalStateException("'output' is null");
 		}
+		
 		synchronized (output) {
-			coder.write(output, command);
+			synchronized(inFlight){
+				coder.write(output, command);
+				command.outgoing();
+				inFlight.add(command);
+			}
 		}
 	}
 
