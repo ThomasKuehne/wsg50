@@ -27,6 +27,7 @@ package cn.kuehne.wsg50.roboter2012;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.Command;
@@ -37,9 +38,23 @@ import cn.kuehne.wsg50.Parameter;
 
 public class CommandBridge implements Command {
 	private Command command;
+	private int nextReplyIndex;
 	private List<Acknowledge> replies;
+	private Semaphore semaphore;
 
 	public CommandBridge() {
+	}
+
+	void addAcknowledge(Acknowledge acknowledge) {
+		if (acknowledge == null) {
+			throw new IllegalArgumentException("'acknowledge' is null");
+		}
+		if (acknowledge.getPacketID() != command.getPacketID()) {
+			throw new IllegalArgumentException("'acknowledge' has bad packet ID: " + acknowledge.getPacketID()
+					+ " instead of " + command.getPacketID());
+		}
+		replies.add(acknowledge);
+		semaphore.release(1);
 	}
 
 	public final CommandBridge getCommand() {
@@ -54,15 +69,12 @@ public class CommandBridge implements Command {
 		return command.getPacketID();
 	}
 
+	@Override
 	public final Parameter[] getParameters() {
 		if (command == null) {
 			throw new IllegalStateException("'command' is null");
 		}
 		return command.getParameters();
-	}
-
-	public final List<Acknowledge> getReplies() {
-		return replies;
 	}
 
 	public final boolean isError() {
@@ -93,6 +105,7 @@ public class CommandBridge implements Command {
 
 	void outgoing() {
 		replies = new ArrayList<Acknowledge>();
+		semaphore = new Semaphore(0);
 	}
 
 	public final void setCommand(final Command newCommand) {
@@ -119,6 +132,17 @@ public class CommandBridge implements Command {
 			throw new IllegalStateException("'command' is null");
 		}
 		command.setPayload(p);
+	}
+
+	public Acknowledge waitForNextAcknowledge() {
+		while (true) {
+			try {
+				semaphore.acquire();
+				return replies.get(nextReplyIndex++);
+			} catch (InterruptedException e) {
+				// noop
+			}
+		}
 	}
 
 	@Override

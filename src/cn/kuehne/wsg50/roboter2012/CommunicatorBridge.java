@@ -47,11 +47,11 @@ import cn.kuehne.wsg50.helper.OutputToStream;
 
 public class CommunicatorBridge implements Closeable {
 	private final PacketCoder coder;
-	private final List<CommandBridge> inFlight; 
+	private final List<CommandBridge> inFlight;
 
-	private URI uri;
 	private Input input;
 	private Output output;
+	private URI uri;
 
 	public CommunicatorBridge() {
 		coder = new PacketCoder();
@@ -66,23 +66,6 @@ public class CommunicatorBridge implements Closeable {
 	@Override
 	public final void close() {
 		disconnect();
-	}
-
-	final void setIO(Input newInput, Output newOutput) {
-		if (newInput == null) {
-			throw new IllegalStateException("'newInput' is null");
-		}
-		if (newOutput == null) {
-			throw new IllegalStateException("'newOutput' is null");
-		}
-		if (input != null) {
-			throw new IllegalStateException("'input' is already open");
-		}
-		if (output != null) {
-			throw new IllegalStateException("'output' is already open");
-		}
-		input = newInput;
-		output = newOutput;
 	}
 
 	public void connect() throws IOException {
@@ -150,10 +133,11 @@ public class CommunicatorBridge implements Closeable {
 		} catch (Exception e) {
 		}
 		input = null;
-		
-		try{
+
+		try {
 			inFlight.clear();
-		}catch(Exception e){}
+		} catch (Exception e) {
+		}
 	}
 
 	public final boolean isConnected() {
@@ -164,19 +148,19 @@ public class CommunicatorBridge implements Closeable {
 		if (input == null) {
 			throw new IllegalStateException("'input' is null");
 		}
-		
+
 		final Acknowledge ack;
 		synchronized (input) {
-			ack =  coder.readAcknowledge(input, true);
+			ack = coder.readAcknowledge(input, true);
 		}
-		
-		synchronized(inFlight){
+
+		synchronized (inFlight) {
 			Iterator<CommandBridge> i = inFlight.iterator();
-			while(i.hasNext()){
+			while (i.hasNext()) {
 				CommandBridge cmd = i.next();
-				if(ack.getPacketID() == cmd.getPacketID()){
-					cmd.getReplies().add(ack);
-					if(ack.getStatusCode() != E.CMD_PENDING.getCode()){
+				if (ack.getPacketID() == cmd.getPacketID()) {
+					cmd.addAcknowledge(ack);
+					if (ack.getStatusCode() != E.CMD_PENDING.getCode()) {
 						i.remove();
 						break;
 					}
@@ -193,9 +177,9 @@ public class CommunicatorBridge implements Closeable {
 		if (output == null) {
 			throw new IllegalStateException("'output' is null");
 		}
-		
+
 		synchronized (output) {
-			synchronized(inFlight){
+			synchronized (inFlight) {
 				coder.write(output, command);
 				command.outgoing();
 				inFlight.add(command);
@@ -203,14 +187,21 @@ public class CommunicatorBridge implements Closeable {
 		}
 	}
 
-	public void setURI(final URI newURI) throws URISyntaxException {
-		if (newURI == null) {
-			throw new IllegalArgumentException("'newURI' is null");
+	final void setIO(Input newInput, Output newOutput) {
+		if (newInput == null) {
+			throw new IllegalStateException("'newInput' is null");
+		}
+		if (newOutput == null) {
+			throw new IllegalStateException("'newOutput' is null");
 		}
 		if (input != null) {
 			throw new IllegalStateException("'input' is already open");
 		}
-		uri = newURI;
+		if (output != null) {
+			throw new IllegalStateException("'output' is already open");
+		}
+		input = newInput;
+		output = newOutput;
 	}
 
 	public final void setURI(final String newURI) throws URISyntaxException {
@@ -221,5 +212,15 @@ public class CommunicatorBridge implements Closeable {
 			throw new IllegalArgumentException("'newURI' is empty");
 		}
 		setURI(new URI(newURI));
+	}
+
+	public void setURI(final URI newURI) throws URISyntaxException {
+		if (newURI == null) {
+			throw new IllegalArgumentException("'newURI' is null");
+		}
+		if (input != null) {
+			throw new IllegalStateException("'input' is already open");
+		}
+		uri = newURI;
 	}
 }
