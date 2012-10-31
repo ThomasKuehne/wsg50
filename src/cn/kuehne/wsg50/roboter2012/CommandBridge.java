@@ -43,6 +43,7 @@ public class CommandBridge implements Command {
 	private Semaphore semaphore;
 
 	public CommandBridge() {
+		semaphore = new Semaphore(0);
 	}
 
 	void addAcknowledge(Acknowledge acknowledge) {
@@ -105,7 +106,6 @@ public class CommandBridge implements Command {
 
 	void outgoing() {
 		replies = new ArrayList<Acknowledge>();
-		semaphore = new Semaphore(0);
 	}
 
 	public final void setCommand(final Command newCommand) {
