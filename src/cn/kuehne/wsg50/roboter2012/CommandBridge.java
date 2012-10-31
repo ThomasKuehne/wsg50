@@ -152,4 +152,12 @@ public class CommandBridge implements Command {
 		}
 		command.writePayload(builder);
 	}
+	
+	@Override
+	public String toString(){
+		if(command != null){
+			return command.toString();
+		}
+		return super.toString();
+	}
 }
