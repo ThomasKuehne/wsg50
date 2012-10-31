@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import cn.kuehne.wsg50.Acknowledge;
+import cn.kuehne.wsg50.BugException;
 import cn.kuehne.wsg50.Command;
 import cn.kuehne.wsg50.Input;
 import cn.kuehne.wsg50.Output;
@@ -48,17 +49,13 @@ public class CommunicatorBridge implements Closeable {
 	private Input input;
 	private Output output;
 
-	public CommunicatorBridge() throws URISyntaxException {
-		this("tcp://wsg50-00419251:1000");
-	}
-
-	public CommunicatorBridge(final String uri) throws URISyntaxException {
-		this(new URI(uri));
-	}
-	
-	public CommunicatorBridge(final URI uri) throws URISyntaxException {
+	public CommunicatorBridge() {
 		coder = new PacketCoder();
-		setURI(uri);
+		try {
+			setURI("tcp://wsg50-00419251:1000");
+		} catch (Exception e) {
+			throw new BugException(e);
+		}
 	}
 
 	@Override
@@ -66,11 +63,11 @@ public class CommunicatorBridge implements Closeable {
 		disconnect();
 	}
 
-	final void setIO(Input newInput, Output newOutput){
-		if(newInput == null){
+	final void setIO(Input newInput, Output newOutput) {
+		if (newInput == null) {
 			throw new IllegalStateException("'newInput' is null");
 		}
-		if(newOutput == null){
+		if (newOutput == null) {
 			throw new IllegalStateException("'newOutput' is null");
 		}
 		if (input != null) {
@@ -82,29 +79,29 @@ public class CommunicatorBridge implements Closeable {
 		input = newInput;
 		output = newOutput;
 	}
-	
+
 	public void connect() throws IOException {
-		if(uri == null){
+		if (uri == null) {
 			throw new IllegalArgumentException("'uri' is null");
 		}
 
 		final String scheme = uri.getScheme();
-		if("tcp".equals(scheme)){
+		if ("tcp".equals(scheme)) {
 			connectTCP(uri.getHost(), uri.getPort());
-		}else{
+		} else {
 			throw new UnsupportedOperationException("unhandled scheme: " + scheme);
 		}
 	}
 
 	@SuppressWarnings("resource")
 	private void connectTCP(final String host, int port) throws IOException {
-		if(host == null){
+		if (host == null) {
 			throw new IllegalArgumentException("'host' is null");
 		}
-		if(port == -1){
+		if (port == -1) {
 			port = 1000;
 		}
-		
+
 		IOException last = null;
 
 		for (final InetAddress address : InetAddress.getAllByName(host)) {
@@ -118,8 +115,14 @@ public class CommunicatorBridge implements Closeable {
 			} catch (IOException ioe) {
 				last = ioe;
 
-				try{out.close();}catch(Exception e){}
-				try{socket.close();}catch(Exception e){}
+				try {
+					out.close();
+				} catch (Exception e) {
+				}
+				try {
+					socket.close();
+				} catch (Exception e) {
+				}
 				continue;
 			}
 
@@ -143,8 +146,6 @@ public class CommunicatorBridge implements Closeable {
 		}
 		input = null;
 	}
-
-	
 
 	public final boolean isConnected() {
 		return (input != null) || (output != null);
@@ -180,7 +181,7 @@ public class CommunicatorBridge implements Closeable {
 		}
 		uri = newURI;
 	}
-	
+
 	public final void setURI(final String newURI) throws URISyntaxException {
 		if (newURI == null) {
 			throw new IllegalArgumentException("'newURI' is null");
