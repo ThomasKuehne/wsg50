@@ -141,7 +141,7 @@ public class CommunicatorBridge implements Closeable {
 	}
 
 	public final boolean isConnected() {
-		return (input != null) || (output != null);
+		return (input != null) && (output != null);
 	}
 
 	public final Acknowledge readAcknowledge() {
@@ -150,12 +150,10 @@ public class CommunicatorBridge implements Closeable {
 		}
 
 		final Acknowledge ack;
-		synchronized (input) {
-			ack = coder.readAcknowledge(input, true);
-		}
+		ack = coder.readAcknowledge(input, true);
 
 		synchronized (inFlight) {
-			Iterator<CommandBridge> i = inFlight.iterator();
+			final Iterator<CommandBridge> i = inFlight.iterator();
 			while (i.hasNext()) {
 				CommandBridge cmd = i.next();
 				if (ack.getPacketID() == cmd.getPacketID()) {
@@ -178,12 +176,10 @@ public class CommunicatorBridge implements Closeable {
 			throw new IllegalStateException("'output' is null");
 		}
 
-		synchronized (output) {
-			synchronized (inFlight) {
-				coder.write(output, command);
-				command.outgoing();
-				inFlight.add(command);
-			}
+		synchronized (inFlight) {
+			coder.write(output, command);
+			command.outgoing();
+			inFlight.add(command);
 		}
 	}
 

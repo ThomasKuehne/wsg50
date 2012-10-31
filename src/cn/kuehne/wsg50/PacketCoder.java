@@ -33,38 +33,40 @@ import cn.kuehne.wsg50.helper.PayloadHandlerDebug;
 
 public class PacketCoder {
 
-	public synchronized void read(final Input input, final PayloadHandler payloadHandler, final boolean validateCRC) {
+	public void read(final Input input, final PayloadHandler payloadHandler, final boolean validateCRC) {
 		if (input == null) {
 			throw new IllegalArgumentException("output is null");
 		}
 
-		@SuppressWarnings("resource")
-		final InputHelper in = new InputHelper(input);
-		in.markPacketStart();
-		for (int i = 0; i < 3; i++) {
-			final byte tmpByte = in.readByte();
-			if (tmpByte != (byte) 0xAA) {
-				throw new IllegalArgumentException("bad praeamble byte " + i + ": 0x"
-						+ Integer.toHexString(0xFF & tmpByte));
+		synchronized (input) {
+			@SuppressWarnings("resource")
+			final InputHelper in = new InputHelper(input);
+			in.markPacketStart();
+			for (int i = 0; i < 3; i++) {
+				final byte tmpByte = in.readByte();
+				if (tmpByte != (byte) 0xAA) {
+					throw new IllegalArgumentException("bad praeamble byte " + i + ": 0x"
+							+ Integer.toHexString(0xFF & tmpByte));
+				}
 			}
-		}
-		final byte id = in.readByte();
-		final int size = 0xFFFF & in.readShort();
-		final byte[] payload = new byte[size];
-		for (int i = 0; i < payload.length; i++) {
-			payload[i] = in.readByte();
+			final byte id = in.readByte();
+			final int size = 0xFFFF & in.readShort();
+			final byte[] payload = new byte[size];
+			for (int i = 0; i < payload.length; i++) {
+				payload[i] = in.readByte();
+			}
+
+			final short crc = in.readShort();
+
+			final boolean hasValidCRC;
+			if (validateCRC) {
+				hasValidCRC = (0 == in.getCRC());
+			} else {
+				hasValidCRC = (crc == 0);
+			}
+			payloadHandler.handlePayload(id, payload, hasValidCRC);
 		}
 
-		final short crc = in.readShort();
-
-		final boolean hasValidCRC;
-		if (validateCRC) {
-			hasValidCRC = (0 == in.getCRC());
-		} else {
-			hasValidCRC = (crc == 0);
-		}
-
-		payloadHandler.handlePayload(id, payload, hasValidCRC);
 	}
 
 	public Acknowledge readAcknowledge(final Input input, final boolean validateCRC) {
@@ -86,7 +88,7 @@ public class PacketCoder {
 		return (T) payloadHandler.getLastPacket();
 	}
 
-	public synchronized void write(final Output output, final Packet packet) {
+	public void write(final Output output, final Packet packet) {
 		if (output == null) {
 			throw new IllegalArgumentException("output is null");
 		}
@@ -99,6 +101,8 @@ public class PacketCoder {
 		packet.writePayload(builder);
 
 		byte[] encoded = builder.getEncoded();
-		output.writePacket(encoded);
+		synchronized (output) {
+			output.writePacket(encoded);
+		}
 	}
 }
