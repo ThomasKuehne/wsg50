@@ -62,6 +62,13 @@ public class CommandBridge implements Command {
 		return this;
 	}
 
+	public final Acknowledge getLatestAcknowledge(){
+		if (replies == null || replies.size() < 1){
+			return null;
+		}
+		return replies.get(replies.size()-1);
+	}
+
 	@Override
 	public final byte getPacketID() {
 		if (command == null) {
@@ -77,10 +84,10 @@ public class CommandBridge implements Command {
 		}
 		return command.getParameters();
 	}
-
+	
 	public final boolean isError() {
-		if (replies != null && 0 < replies.size()) {
-			final Acknowledge last = replies.get(replies.size()-1);
+		final Acknowledge last = getLatestAcknowledge();
+		if(last != null){
 			final short status = last.getStatusCode();
 			return !(E.SUCCESS.getCode() == status || E.CMD_PENDING.getCode() == status);
 		}
@@ -88,8 +95,8 @@ public class CommandBridge implements Command {
 	}
 
 	public boolean isFinished() {
-		if (replies != null && 0 < replies.size()) {
-			final Acknowledge last = replies.get(replies.size()-1);
+		final Acknowledge last = getLatestAcknowledge();
+		if(last != null){
 			final short status = last.getStatusCode();
 			return E.SUCCESS.getCode() == status;
 		}
@@ -134,6 +141,14 @@ public class CommandBridge implements Command {
 		command.setPayload(p);
 	}
 
+	@Override
+	public String toString(){
+		if(command != null){
+			return command.toString();
+		}
+		return super.toString();
+	}
+
 	public Acknowledge waitForNextAcknowledge() {
 		while (true) {
 			try {
@@ -144,20 +159,12 @@ public class CommandBridge implements Command {
 			}
 		}
 	}
-
+	
 	@Override
 	public final void writePayload(PacketBuilder builder) {
 		if (command == null) {
 			throw new IllegalStateException("'command' is null");
 		}
 		command.writePayload(builder);
-	}
-	
-	@Override
-	public String toString(){
-		if(command != null){
-			return command.toString();
-		}
-		return super.toString();
 	}
 }
