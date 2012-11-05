@@ -28,6 +28,7 @@ package cn.kuehne.wsg50.helper;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.BugException;
@@ -45,6 +46,57 @@ public class AbstractPacket implements Packet {
 			throw new IllegalArgumentException("id is null");
 		}
 		id = pID;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (!(other instanceof Packet)) {
+			return false;
+		}
+		final Packet otherPacket = (Packet) other;
+		if (otherPacket.getPacketID() != getPacketID()) {
+			return false;
+		}
+		if ((otherPacket instanceof Command) ^ (this instanceof Command)) {
+			return false;
+		}
+		if ((otherPacket instanceof Acknowledge) ^ (this instanceof Acknowledge)) {
+			return false;
+		}
+		
+		final Parameter[] otherParams = otherPacket.getParameters();
+		final Parameter[] params = getParameters();
+		if (otherParams.length != params.length) {
+			return false;
+		}
+		try {
+			for (int i = 0; i < params.length; i++) {
+				if (!params[i].getName().equals(otherParams[i].getName())) {
+					return false;
+				}
+				if (!params[i].getType().equals(otherParams[i].getType())) {
+					return false;
+				}
+
+				final Object a = params[i].getValue();
+				final Object b = otherParams[i].getValue();
+				if (!a.equals(b)) {
+					if(a instanceof byte[]){
+						if(!Arrays.equals((byte[])a, (byte[])b)){
+							return false;
+						}
+					}else{
+						return false;
+					}
+				}
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	public ArrayList<Method> findInMethods() {
@@ -113,8 +165,8 @@ public class AbstractPacket implements Packet {
 		if (param == null) {
 			final ArrayList<Method> in = findInMethods();
 			final ArrayList<Method> out = findOutMethods();
-			if(in.size() != out.size()){
-				throw new BugException("@Out:" + out.size() + " != @In:"+in.size());
+			if (in.size() != out.size()) {
+				throw new BugException("@Out:" + out.size() + " != @In:" + in.size());
 			}
 
 			param = new ReflectedParameter[in.size()];

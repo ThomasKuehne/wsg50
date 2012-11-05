@@ -32,7 +32,8 @@ import cn.kuehne.wsg50.helper.Out;
 
 public class SetSoftLimitsCommand extends AbstractCommand {
 
-	private float Limit_Minus, Limit_Plus;
+	private float minus;
+	private float plus;
 
 	public SetSoftLimitsCommand() {
 		super(PacketID.SetSoftLimits);
@@ -40,22 +41,22 @@ public class SetSoftLimitsCommand extends AbstractCommand {
 
 	@Out(0)
 	public float getSoftLimitMinus() {
-		return Limit_Minus;
+		return minus;
 	}
 
 	@Out(1)
 	public float getSoftLimitPlus() {
-		return Limit_Plus;
+		return plus;
 	}
 
 	@In(0)
 	public void setSoftLimitMinus(float f) {
-		Limit_Minus = f;
+		minus = f;
 	}
 
 	@In(1)
 	public void setSoftLimitPlus(float f) {
-		Limit_Minus = f;
+		plus = f;
 	}
 
 }

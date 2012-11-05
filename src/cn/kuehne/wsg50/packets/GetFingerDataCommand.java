@@ -32,19 +32,19 @@ import cn.kuehne.wsg50.helper.Out;
 
 public class GetFingerDataCommand extends AbstractCommand {
 
-	private int index;
+	private byte index;
 
 	public GetFingerDataCommand() {
 		super(PacketID.GetFingerData);
 	}
 
 	@Out(0)
-	public int getIndex() {
+	public byte getIndex() {
 		return index;
 	}
 
 	@In(0)
-	public void setIndex(final int newIndex) {
+	public void setIndex(final byte newIndex) {
 		if (newIndex < 0) {
 			throw new IllegalArgumentException("newIndex: 0 > " + newIndex);
 		}

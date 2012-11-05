@@ -23,39 +23,59 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package cn.kuehne.wsg50.packets;
 
-import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.helper.AbstractCommand;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
+package cn.kuehne.wsg50.helper;
 
-public class GetSpeedCommand extends AbstractCommand {
+import java.io.InputStream;
+import java.io.PrintStream;
 
-	private byte flags; // TODO
-	private short period;
+public class DebugFromStream extends InputFromStream {
+	private final PrintStream debugOut;
+	private boolean firstByte;
+	private boolean firstPacket;
 
-	public GetSpeedCommand() {
-		super(PacketID.GetSpeed);
+	public DebugFromStream(InputStream s, PrintStream debug) {
+		super(s);
+		if (debug == null) {
+			throw new IllegalArgumentException("'debug' is null");
+		}
+
+		debugOut = debug;
+		firstPacket = true;
 	}
 
-	@Out(0)
-	public byte getFlags() {
-		return flags;
+	@Override
+	public void close() {
+		super.close();
+		if (!firstPacket) {
+			debugOut.println("}");
+		}
 	}
 
-	@Out(1)
-	public short getPeriod() {
-		return period;
+	@Override
+	public void markPacketStart() {
+		if (firstPacket) {
+			firstPacket = false;
+		} else {
+			debugOut.println("}");
+		}
+		debugOut.print("{");
+		firstByte = true;
 	}
 
-	@In(0)
-	public void setFlags(final byte newFlags) {
-		flags = newFlags;
+	@Override
+	public byte readByte() {
+		final byte b = super.readByte();
+		if (firstByte) {
+			firstByte = false;
+		} else {
+			debugOut.print(", ");
+		}
+		if (b < 0) {
+			debugOut.print("(byte)");
+		}
+		debugOut.printf("0x%02X", 0xFF & b);
+		return b;
 	}
 
-	@In(1)
-	public void setPeriod(final short newPeriod) {
-		period = newPeriod;
-	}
 }

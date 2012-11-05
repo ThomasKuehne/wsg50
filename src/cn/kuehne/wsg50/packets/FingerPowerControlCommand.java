@@ -33,7 +33,7 @@ import cn.kuehne.wsg50.helper.Out;
 public class FingerPowerControlCommand extends AbstractCommand {
 
 	private byte flags; // TODO
-	private int index;
+	private byte index;
 
 	public FingerPowerControlCommand() {
 		super(PacketID.FingerPowerControl);
@@ -49,7 +49,7 @@ public class FingerPowerControlCommand extends AbstractCommand {
 	}
 
 	@Out(0)
-	public int getIndex() {
+	public byte getIndex() {
 		return index;
 	}
 
@@ -66,7 +66,7 @@ public class FingerPowerControlCommand extends AbstractCommand {
 	}
 
 	@In(0)
-	public void setIndex(final int newIndex) {
+	public void setIndex(final byte newIndex) {
 		index = newIndex;
 	}
 }

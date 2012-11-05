@@ -26,7 +26,6 @@
 package cn.kuehne.wsg50.packets;
 
 import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.TodoException;
 import cn.kuehne.wsg50.helper.AbstractCommand;
 import cn.kuehne.wsg50.helper.In;
 import cn.kuehne.wsg50.helper.Out;
@@ -59,16 +58,20 @@ public class PrePositionFingersCommand extends AbstractCommand {
 		return width;
 	}
 
-	public boolean isClamp() {
-		throw new TodoException();
+	public boolean isStopOnBlock() {
+		return 2 == (flags & 2);
 	}
 
 	public boolean isRelative() {
-		throw new TodoException();
+		return 1 == (flags & 1);
 	}
 
-	public void setClamp(boolean b) {
-		throw new TodoException();
+	public void setStopOnBlock(boolean stopOnblock) {
+		if(stopOnblock){
+			flags |= 2;
+		}else{
+			flags &= -2;
+		}
 	}
 
 	@In(0)
@@ -76,8 +79,12 @@ public class PrePositionFingersCommand extends AbstractCommand {
 		flags = newFlags;
 	}
 
-	public void setRelative(boolean b) {
-		throw new TodoException();
+	public void setRelative(boolean relative) {
+		if(relative){
+			flags |= 1;
+		}else{
+			flags &= -1;
+		}
 	}
 
 	@In(2)

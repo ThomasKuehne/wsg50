@@ -34,7 +34,7 @@ import cn.kuehne.wsg50.helper.Out;
 public class GetForceCommand extends AbstractCommand {
 
 	private byte flags;
-	private float force;
+	private short period;
 
 	public GetForceCommand() {
 		super(PacketID.GetForce);
@@ -46,8 +46,8 @@ public class GetForceCommand extends AbstractCommand {
 	}
 
 	@Out(1)
-	public float getForce() {
-		return force;
+	public short getPeriod() {
+		return period;
 	}
 
 	@In(0)
@@ -56,7 +56,7 @@ public class GetForceCommand extends AbstractCommand {
 	}
 
 	@In(1)
-	public void setForce(final float newForce) {
-		force = newForce;
+	public void setPeriod(final short newPeriod) {
+		period = newPeriod;
 	}
 }

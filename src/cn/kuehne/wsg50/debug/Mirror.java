@@ -40,7 +40,7 @@ import cn.kuehne.wsg50.PacketCoder;
 import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.Parameter;
 import cn.kuehne.wsg50.PayloadHandler;
-import cn.kuehne.wsg50.helper.InputFromStream;
+import cn.kuehne.wsg50.helper.DebugFromStream;
 import cn.kuehne.wsg50.helper.OutputToStream;
 import cn.kuehne.wsg50.helper.PayloadHandlerCommand;
 import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge;
@@ -190,7 +190,7 @@ public class Mirror implements PayloadHandler, Runnable {
 				try {
 					final Socket client = server.accept();
 					try {
-						final InputFromStream in = new InputFromStream(client.getInputStream());
+						final DebugFromStream in = new DebugFromStream(client.getInputStream(), System.err);
 						final OutputToStream out = new OutputToStream(client.getOutputStream());
 						try {
 							while (true) {
