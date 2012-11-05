@@ -26,6 +26,10 @@
 
 package cn.kuehne.wsg50.helper;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +43,19 @@ import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.Parameter;
 
 public class AbstractPacket implements Packet {
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface In {
+		public int value();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface Out {
+		public int value();
+	}
+
+
 	private final PacketID id;
 
 	protected AbstractPacket(PacketID pID) {

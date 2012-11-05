@@ -2,8 +2,6 @@ package cn.kuehne.wsg50.packets;
 
 import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractCommand;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
 
 public class GraspPartCommand extends AbstractCommand {
 	private float width;

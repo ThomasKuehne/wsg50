@@ -28,8 +28,6 @@ package cn.kuehne.wsg50.packets;
 
 import cn.kuehne.wsg50.PacketID;
 import cn.kuehne.wsg50.helper.AbstractAcknowledge;
-import cn.kuehne.wsg50.helper.In;
-import cn.kuehne.wsg50.helper.Out;
 
 public class GetOpeningWidthAcknowledge extends AbstractAcknowledge {
 	private float width;
