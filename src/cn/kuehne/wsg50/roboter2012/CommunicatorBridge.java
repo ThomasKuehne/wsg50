@@ -38,6 +38,7 @@ import java.util.List;
 
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.BugException;
+import cn.kuehne.wsg50.Command;
 import cn.kuehne.wsg50.E;
 import cn.kuehne.wsg50.Input;
 import cn.kuehne.wsg50.Output;
@@ -155,9 +156,10 @@ public class CommunicatorBridge implements Closeable {
 		synchronized (inFlight) {
 			final Iterator<CommandBridge> i = inFlight.iterator();
 			while (i.hasNext()) {
-				CommandBridge cmd = i.next();
+				final CommandBridge cmdBridge = i.next();
+				final Command cmd = cmdBridge.getCommand();
 				if (ack.getPacketID() == cmd.getPacketID()) {
-					cmd.addAcknowledge(ack);
+					cmdBridge.addAcknowledge(ack);
 					if (ack.getStatusCode() != E.CMD_PENDING.getCode()) {
 						i.remove();
 						break;
@@ -177,7 +179,7 @@ public class CommunicatorBridge implements Closeable {
 		}
 
 		synchronized (inFlight) {
-			coder.write(output, command);
+			coder.write(output, command.getCommand());
 			command.outgoing();
 			inFlight.add(command);
 		}

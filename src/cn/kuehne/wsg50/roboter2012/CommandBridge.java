@@ -32,17 +32,18 @@ import java.util.concurrent.Semaphore;
 import cn.kuehne.wsg50.Acknowledge;
 import cn.kuehne.wsg50.Command;
 import cn.kuehne.wsg50.E;
-import cn.kuehne.wsg50.PacketBuilder;
-import cn.kuehne.wsg50.PacketID;
-import cn.kuehne.wsg50.Parameter;
 
-public class CommandBridge implements Command {
-	private Command command;
+public class CommandBridge{
+	private final Command command;
 	private int nextReplyIndex;
 	private List<Acknowledge> replies;
 	private Semaphore semaphore;
 
-	public CommandBridge() {
+	public CommandBridge(final Command command) {
+		if(command == null){
+			throw new IllegalArgumentException("command is null");
+		}
+		this.command = command;
 		semaphore = new Semaphore(0);
 	}
 
@@ -58,8 +59,8 @@ public class CommandBridge implements Command {
 		semaphore.release(1);
 	}
 
-	public final CommandBridge getCommand() {
-		return this;
+	public final Command getCommand() {
+		return command;
 	}
 
 	public final Acknowledge getLatestAcknowledge(){
@@ -69,22 +70,6 @@ public class CommandBridge implements Command {
 		return replies.get(replies.size()-1);
 	}
 
-	@Override
-	public final byte getPacketID() {
-		if (command == null) {
-			throw new IllegalStateException("'command' is null");
-		}
-		return command.getPacketID();
-	}
-
-	@Override
-	public final Parameter[] getParameters() {
-		if (command == null) {
-			throw new IllegalStateException("'command' is null");
-		}
-		return command.getParameters();
-	}
-	
 	public final boolean isError() {
 		final Acknowledge last = getLatestAcknowledge();
 		if(last != null){
@@ -115,38 +100,9 @@ public class CommandBridge implements Command {
 		replies = new ArrayList<Acknowledge>();
 	}
 
-	public final void setCommand(final Command newCommand) {
-		if (isStarted()) {
-			throw new IllegalStateException("command has already been encoded");
-		}
-		if (newCommand == null) {
-			throw new IllegalArgumentException("'newCommand' is null");
-		}
-		command = newCommand;
-	}
-
-	public final void setCommand(final String name) {
-		if (isStarted()) {
-			throw new IllegalStateException("command has already been encoded");
-		}
-		final PacketID id = PacketID.valueOf(name);
-		command = id.getCommand();
-	}
-
-	@Override
-	public final void setPayload(byte[] p) {
-		if (command == null) {
-			throw new IllegalStateException("'command' is null");
-		}
-		command.setPayload(p);
-	}
-
 	@Override
 	public String toString(){
-		if(command != null){
-			return command.toString();
-		}
-		return super.toString();
+		return command.toString();
 	}
 
 	public Acknowledge waitForNextAcknowledge() {
@@ -158,13 +114,5 @@ public class CommandBridge implements Command {
 				// noop
 			}
 		}
-	}
-	
-	@Override
-	public final void writePayload(PacketBuilder builder) {
-		if (command == null) {
-			throw new IllegalStateException("'command' is null");
-		}
-		command.writePayload(builder);
 	}
 }
