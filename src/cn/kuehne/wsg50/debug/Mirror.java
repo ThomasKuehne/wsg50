@@ -43,6 +43,7 @@ import cn.kuehne.wsg50.PayloadHandler;
 import cn.kuehne.wsg50.helper.DebugFromStream;
 import cn.kuehne.wsg50.helper.OutputToStream;
 import cn.kuehne.wsg50.helper.PayloadHandlerCommand;
+import cn.kuehne.wsg50.packets.AcknowledgeFaultAcknowledge;
 import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge;
 import cn.kuehne.wsg50.packets.GetGraspingStateAcknowledge.GraspingState;
 import cn.kuehne.wsg50.packets.GetOpeningWidthAcknowledge;
@@ -142,6 +143,8 @@ public class Mirror implements PayloadHandler, Runnable {
 		}else if(command.getPacketID() == PacketID.Homing.getId()){
 			final HomingAcknowledge back = new HomingAcknowledge();
 			return back;
+		}else if(command.getPacketID() == PacketID.AcknowledgeFault.getId()){
+			return new AcknowledgeFaultAcknowledge();
 		} else {
 			return new FeatureNotSupportedPacket(id);
 		}
